@@ -216,11 +216,6 @@ require("plugins.nvimtree")
 require("plugins.formatter")
 require("plugins.tabline")
 require("plugins.catppuccin")
-require("feline").setup(
-  {
-    components = require("catppuccin.core.integrations.feline")
-  }
-)
 require("plugins.startup")
 require("incline").setup {
   hide = {

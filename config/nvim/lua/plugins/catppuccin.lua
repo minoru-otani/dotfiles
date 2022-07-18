@@ -1,39 +1,68 @@
 local catppuccin = require("catppuccin")
+local ctp_feline = require("catppuccin.groups.integrations.feline")
+local feline = require("feline")
 
 catppuccin.setup {
-  term_colors = true,
+  dim_inactive = {
+    enabled = false,
+    shade = "dark",
+    percentage = 0.15
+  },
+  transparent_background = false,
+  term_colors = false,
+  compile = {
+    enabled = false,
+    path = vim.fn.stdpath "cache" .. "/catppuccin",
+    suffix = "_compiled"
+  },
   styles = {
-    comments = "italic",
-    conditionals = "italic",
-    loops = "NONE"
+    comments = {"italic"},
+    conditionals = {"italic"},
+    loops = {},
+    functions = {"bold"},
+    keywords = {},
+    strings = {},
+    variables = {},
+    numbers = {},
+    booleans = {},
+    properties = {},
+    types = {},
+    operators = {}
   },
   integrations = {
     treesitter = true,
-    -- ts_rainbow = true,
-    -- feline = true,
     native_lsp = {
       enabled = true,
       virtual_text = {
-        errors = "italic",
-        hints = "italic",
-        warnings = "italic",
-        information = "italic"
+        errors = {"italic"},
+        hints = {"italic"},
+        warnings = {"italic"},
+        information = {"italic"}
       },
       underlines = {
-        error = "underline",
-        hints = "underline",
-        warnings = "underline",
-        information = "underline"
+        errors = {"underline"},
+        hints = {"underline"},
+        warnings = {"underline"},
+        information = {"underline"}
       }
     },
-    lsp_trouble = true,
+    lsp_trouble = false,
     cmp = true,
     gitsigns = true,
     telescope = true,
     nvimtree = {
       enabled = true,
-      show_root = false,
+      show_root = true,
       transparent_panel = false
-    }
+    },
+    markdown = true,
+    ts_rainbow = false
   }
 }
+
+ctp_feline.setup {}
+feline.setup(
+  {
+    components = ctp_feline.get()
+  }
+)
