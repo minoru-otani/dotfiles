@@ -28,6 +28,7 @@ COLOR_WHITE="\e[1;37m"
 COLOR_NONE="\e[0m"
 
 if [ -z "$TMUX" ]; then
+    # -z string stringの長さがゼロなら真
     export TERM=xterm-256color-italic
 else
     export TERM=tmux-256color
@@ -36,9 +37,20 @@ fi
 
 # initialize autocomplete
 autoload -U compinit add-zsh-hook
+# 補完機能を有効にする
+# -Uを付けるとユーザ側で定義したaliasに上書きされるのを防ぐ
+# add-zsh-hook: hook関数を登録する。add-zsh-hook <hook名><関数名>
+# hook名とはどういう時に関数が呼び出されるかというイベント種別を表す文字列
+# https://qiita.com/mollifier/items/558712f1a93ee07e22e2
+# hook名とはどういう時に関数が呼び出されるかというイベント種別を表す文字列
+# hook名　  呼び出される条件
+# chpwd     カレンとディレクトリが変更した時
+# precmd    プロンプトを表示する直前
+# preexec   Enterを推してコマンドを実行する直前
 compinit
 
 # prepend_path $HOME/npmbin/node_modules/.bin
+# prepend_path関数を使ってパスに追加する
 prepend_path /usr/local/opt/grep/libexec/gnubin
 prepend_path /usr/local/sbin
 prepend_path $DOTFILES/bin
@@ -51,15 +63,18 @@ if [[ -d ~/code ]]; then
 fi
 
 # display how long all tasks over 10 seconds take
+# 実行したプロセスの消費時間がREPORTTIME以上なら、自動的に統計情報を表示する
 export REPORTTIME=10
+# viのインサートモードからノーマルモードへ戻るまでのタイムラグを設定する
 export KEYTIMEOUT=1              # 10ms delay for key sequences
 
-setopt NO_BG_NICE
-setopt NO_HUP                    # don't kill background jobs when the shell exits
-setopt NO_LIST_BEEP
-setopt LOCAL_OPTIONS
-setopt LOCAL_TRAPS
-setopt PROMPT_SUBST
+setopt NO_BG_NICE    # Background処理があるが、niceが使えないため、BG_NICEオプションを無効化する
+setopt NO_HUP        # don't kill background jobs when the shell exits
+setopt NO_LIST_BEEP  # 補完の時にbeep音を鳴らさない
+setopt LOCAL_OPTIONS # 関数の中で設定したオプションをその関数内だけで有効化する
+                     #（https://qiita.com/mollifier/items/346b1ed7e86f9bf4a9cc）
+setopt LOCAL_TRAPS   # 関数が関数内でシグナルのトラップを設定できる
+setopt PROMPT_SUBST  # 後でセットするPROMPT変数内で変数展開するようになる
 
 # history
 HISTFILE=~/.zsh_history
@@ -69,8 +84,8 @@ setopt EXTENDED_HISTORY          # write the history file in the ":start:elapsed
 setopt HIST_REDUCE_BLANKS        # remove superfluous blanks before recording entry.
 setopt SHARE_HISTORY             # share history between all sessions.
 setopt HIST_IGNORE_ALL_DUPS      # delete old recorded entry if new entry is a duplicate.
-
-setopt COMPLETE_ALIASES
+#setopt noautomenu               # zshのtabの挙動をbashライクに戻す
+setopt COMPLETE_ALIASES          # エイリアスを展開して、元のコマンドの補完が使えるようにする
 
 # make terminal command navigation sane again
 bindkey "^[[1;5C" forward-word                      # [Ctrl-right] - forward one word
@@ -92,18 +107,43 @@ fi
 bindkey "^A" vi-beginning-of-line
 bindkey -M viins "^F" vi-forward-word               # [Ctrl-f] - move to next word
 bindkey -M viins "^E" vi-add-eol                    # [Ctrl-e] - move to end of line
+# -M keymap: viins(viのインサートモード)のキーマップを修正
 bindkey "^J" history-beginning-search-forward
 bindkey "^K" history-beginning-search-backward
 
 # matches case insensitive for lowercase
+# マッチ仕様の変更はmatcher-listでできる。matcher-listで全域的な設定。matcherで特定のタグだけ適用
+# 入力した単語の全ての文字を別のものに変えてマッチ試行させるには
+# m:Lpattern=Tpattern
+# M:Lpattern=Tpattern
+# とする。mでは補完した時に置き換え後の文字列を、Mでは置き換え前の文字列を挿入する。
+# m:{a-z}={A-Z}では、「aはA、bはB、cはC、...zはZに置き換え」た物でもマッチングを試すことを指示している。
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # pasting with tabs doesn't perform completion
+# 空行に何も入れずにtabを押した時の動作を指定。（よくわからない）
 zstyle ':completion:*' insert-tab pending
 
 # default to file completion
+# https://voidy21.hatenablog.jp/entry/20090902/1251918174
+# completer = 補完システム
+# _complete: 普通の補完関数
+# _expand: グロブや変数の展開を行う。元々あった展開と比べて、細かい制御が可能
+# _approximate: ミススペルを訂正した上で補完を行う
 zstyle ':completion:*' completer _expand _complete _files _correct _approximate
 
+# zstyle from fzf-tab
+# https://github.com/Aloxaf/fzf-tab#usage
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# preview directory's content with exa when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+# switch group using `,` and `.`
+zstyle ':fzf-tab:*' switch-group ',' '.'
 
 ########################################################
 # Plugin setup
@@ -113,13 +153,16 @@ export ZPLUGDIR="$CACHEDIR/zsh/plugins"
 [[ -d "$ZPLUGDIR" ]] || mkdir -p "$ZPLUGDIR"
 # array containing plugin information (managed by zfetch)
 typeset -A plugins
+# -A 変数を連想配列にする。→つまり、pluginsは連想配列
 
 zfetch mafredri/zsh-async async.plugin.zsh
 zfetch zsh-users/zsh-syntax-highlighting
 zfetch zsh-users/zsh-autosuggestions
 zfetch chriskempson/base16-shell
+# tab補完にfzfを導入して使いやすくする
 zfetch Aloxaf/fzf-tab
 
+# fnmはnode.jsのバージョンを管理するコマンド
 if [[ -x "$(command -v fnm)" ]]; then
     eval "$(fnm env --use-on-cd)"
 fi
@@ -132,6 +175,14 @@ fi
 
 # add a config file for ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
+# How to use ripgrep
+# > rg [PATTERN]
+# > rg [PATTERN] [FILE]
+# > rg [PATTERN] [DIRECTORY]
+# > rg -A/B/C NUM [PATTERN] パターンのA(fter)/B(efore)/C(ontext) NUM行を表示
+# > rg -l [PATTERN] マッチしたファイルリストを表示
+# > rg -t TYPE [PATTERN] TYPEに関連するファイルから検索する
+# add a config file for ripgrep
 
 [ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
@@ -171,7 +222,8 @@ fi
 
 # use nvim, but don't make me think about it
 if [[ -n "$(command -v nvim)" ]]; then
-    alias vim="nvim"
+  # -n string stringの長さがノンゼロなら真
+    alias vi="nvim"
     alias vimu="nvim +PlugUpdate +PlugUpgrade"
     alias vimg="nvim +Ge:"
 fi
