@@ -3,21 +3,43 @@
 # .zshenv' should not contain commands that produce output or assume the shell is attached to a tty.
 
 export DOTFILES="$(dirname "$(dirname "$(readlink "${(%):-%N}")")")"
+# "${var:-default}" varが定義されてなければ、defaultが代入される。この場合の(%)はいつも空のようだ。つまり毎回%Nが採用される？
+# %Nはプロンプト展開の中で用いられるもの
+# %N The name of the script, sourced file, or shell function that zsh is currently executing, whichever was started most recently. If there is none, this is equivalent to the parameter $0. An integer may follow the ‘%’ to specify a number of trailing path components to show; zero means the full path. A negative integer specifies leading components. (ref: https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html#Prompt-Expansion)
+# https://blog.livewing.net/zsh-symbols
+# $()コマンドを実行し、その標準出力を文字列として置換する
+# ()でサブプロセスを実行. 変数はサブプロセス内のみで有効
+# ""で囲まれた文字列は、パラメータ展開・コマンド置換・ヒストリー展開が起こり、それらが評価された状態の文字列が帰る
 export CACHEDIR="$HOME/.local/share"
 export VIM_TMP="$HOME/.vim-tmp"
 
 [[ -d "$CACHEDIR" ]] || mkdir -p "$CACHEDIR"
+# [[]]で囲まれたものは、条件式として評価される。[[の直後はスペースを開ける必要がある
+# https://www.server-memo.net/shellscript/file_check.html
+# -e/a ファイルが存在しているか
+# -d ディレクトリが存在しているか
+# && || 論理積、論理和
+# mkdir -p 必要に応じて親ディレクトリも作成
+
 [[ -d "$VIM_TMP" ]] || mkdir -p "$VIM_TMP"
+# [[]] || 前の条件が真なら、後ろは実行されない
 
 [[ -f ~/.zshenv.local ]] && source ~/.zshenv.local
+# [[]] && 前の条件が正常終了したら、後ろが実行される
 
 fpath=(
     $DOTFILES/zsh/functions
     /usr/local/share/zsh/site-functions
     $fpath
 )
+# =() 配列を初期化して代入
+# DOTFILESの中のzsh/functionsの中の独自コマンドを有効にする
+# 補完のためのautoloadで探索するディレクトリがfpath, FPATHに入っている
 
 typeset -aU path
+# PATH環境変数の重複エントリを削除するらしい
+# https://til.hashrocket.com/posts/7evpdebn7g-remove-duplicates-in-zsh-path
+# https://zenn.dev/ryuu/scraps/91823f45f36114
 
 export EDITOR='nvim'
 export GIT_EDITOR='nvim'
