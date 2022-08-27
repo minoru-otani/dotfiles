@@ -195,7 +195,7 @@ function! SayHello()
 endfunction
 noremap <Plug>(say_hello) :<C-u>call SayHello()<CR>
 
-" coc-definitionでsplit, vsplit, tabeでその定義ファイルを開く
+" coc-definitionで<ctrl-t>でsplit, vsplit, tabeでその定義ファイルを開く
 " https://zenn.dev/skanehira/articles/2021-12-12-vim-coc-nvim-jump-split
 " [
 "   {"text": "(e)dit", "value": "edit"}
