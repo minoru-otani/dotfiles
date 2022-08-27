@@ -1,0 +1,80 @@
+# Latex
+alias vitex="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket /usr/local/bin/nvim"
+# VMD
+alias vmd='/Applications/VMD.app/Contents/MacOS/VMDLauncher'
+# SSH environment
+export APPLE_SSH_ADD_BEHAVIOR=macos
+#alias for LiveReloadX
+alias livereload='livereloadx /Users/otani/Web/ESM-RISM-WEB/web/'
+#rsync
+alias syncweb="rsync -rlptgoD --progress --exclude common/js/news.js --exclude '*.tgz' /Users/otani/iCloud/Documents/Web_page/ESM-RISM-WEB/web/ charon:/home-WWW/otani"
+
+###---below original---###
+# Force to do not write a cache file
+export PYTHONDONTWRITEBYTECODE=1
+
+#account for Juten-Kadai
+#alias ssh2kei1='ssh k00739@k.aics.riken.jp'
+#account for Ippan-Kadai
+#alias ssh2kei1='ssh k00789@k.aics.riken.jp'
+#password for user manual = 'kei'
+#password for user2031 = 'jN0lf*es'
+#programs
+#commands
+#alias kterm='/sw/bin/kterm -sb -km euc -fn 7x14 -geometry 120x30+0+0'
+#alias xterm='/usr/X11R6/bin/xterm -sb -fn 7x14 -geometry 120x30+0+0'
+#environment for MPI
+#LD_LIBRARY_PATH=/opt/local/lib; export LD_LIBRARY_PATH
+#LD_LIBRARY_PATH=/usr/local/lib; export LD_LIBRARY_PATH
+#environment for FORTRAN MKL ICC
+#source /opt/intel/Compiler/11.1/Current/bin/ifortvars.sh intel64
+#source /opt/intel/Compiler/11.1/Current/bin/iccvars.sh intel64
+#source /opt/intel/Compiler/11.1/Current/bin/ifortvars.sh ia32
+#source /opt/intel/Compiler/11.1/Current/bin/iccvars.sh ia32
+#prevent resource fork
+#force using x11 to GNUPLOT
+#export GNUTERM=x11
+
+# Constants
+export rytoev=13.6056925330
+export bohr=0.52917720859
+
+# for openmpi
+#export MPI_INC_DIR="/usr/local/include"
+#export MPI_LIB_DIR="/usr/local/lib"
+#export MPI_LIB_SHARED=""
+#export MPI_LIB_STATIC=""
+#export OMPI_CC=gcc
+#export OMPI_CXX=g++
+#export OMPI_F77=gfortran
+#export OMPI_F90=gfortran
+#export OMPI_FC=gfortran
+export ARCHFLAGS="-arch x86_64"
+export MANPATH=/usr/local/share/man:$MANPATH
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export LDFLAGS="-L/usr/local/opt/openblas/lib -L/usr/local/lib"
+export CPPFLAGS="-I/usr/local/opt/openblas/include"
+#export PATH="/usr/local/opt/sphinx-doc/bin:$PATH"
+#export PATH="/usr/local/opt/tcl-tk/bin:$PATH"
+#export PATH="$HOME/.nodebrew/current/bin:$PATH"
+# Gaussian16 environment
+#export g16root=/Applications
+#export GAUSS_SCRDIR=~/.G16TEMP
+#. $g16root/g16/bsd/g16.profile
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/otani/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/otani/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/otani/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/otani/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
