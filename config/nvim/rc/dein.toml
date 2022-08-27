@@ -1,0 +1,34 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]] # vim上の自動補完
+repo = 'Shougo/deoplete.nvim'
+
+[[plugins]]
+repo = 'rakr/vim-one'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = '0'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+source = 'release'
+build = 'coc#util#install()'
+hook_add = '''
+  let g:coc_global_extensions = ['coc-tsserver','coc-json','coc-clangd','coc-texlab','coc-sh','coc-jedi']
+'''
+
+[[plugins]]
+repo = 'antoinemadec/coc-fzf'
+source = 'release'
