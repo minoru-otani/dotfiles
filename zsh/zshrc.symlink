@@ -105,6 +105,8 @@ else
     bindkey "\e[3~" delete-char
 fi
 bindkey "^A" vi-beginning-of-line
+#-M keymap: The keymap specifies a keymap name that is selected
+#           for any operations by the current command.
 bindkey -M viins "^F" vi-forward-word               # [Ctrl-f] - move to next word
 bindkey -M viins "^E" vi-add-eol                    # [Ctrl-e] - move to end of line
 # -M keymap: viins(viのインサートモード)のキーマップを修正
