@@ -322,8 +322,7 @@ fcoc_p() {
 # fshow_preview - git commit browser with previews
 #fshow_preview() {
 fshow_p() {
-    glNoGraph |
-        fzf-tmux -p 80%,80% --no-sort --reverse --tiebreak=index --no-multi \
+    glNoGraph | fzf-tmux -p 80%,80% --no-sort --reverse --tiebreak=index --no-multi \
             --ansi --preview="$_viewGitLogLine" \
                 --header "enter to view, alt-y to copy hash" \
                 --bind "enter:execute:$_viewGitLogLine   | less -R" \
