@@ -216,7 +216,7 @@ setup_macos() {
         defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
         echo "Set a blazingly fast keyboard repeat rate"
-        defaults write NSGlobalDomain KeyRepeat -int 1
+        defaults write NSGlobalDomain KeyRepeat -int 2
 
         echo "Set a shorter Delay until key repeat"
         defaults write NSGlobalDomain InitialKeyRepeat -int 15
