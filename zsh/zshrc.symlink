@@ -342,8 +342,9 @@ fi
 if [[ -n "$(command -v nvim)" ]]; then
   # -n string stringの長さがノンゼロなら真
     alias vi="nvim"
-    alias vimu="nvim +PlugUpdate +PlugUpgrade"
-    alias vimg="nvim +Ge:"
+    #よく分からないのでコメントアウト
+    #alias vimu="nvim +PlugUpdate +PlugUpgrade"
+    #alias vimg="nvim +Ge:"
 fi
 
 # Filesystem aliases
