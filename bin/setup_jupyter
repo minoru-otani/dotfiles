@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# install jupyterlab
+pip install --upgrade pip
+pip install --no-cache-dir jupyterlab \
+  nglview \
+  ipywidgets \
+  graphviz \
+  requests \
+  jupyterlab_vim \
+  qeschema \
+  git+https://gitlab.com/minoru-otani/ase.git@qe_rism \
+  git+https://github.com/QEF/xsdtools.git
+
+# install jupyterlab extensions
+# jupyter labextension install @axlair/jupyterlab_vim

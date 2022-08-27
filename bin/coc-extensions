@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# https://github.com/KoichiKiyokawa/dotfiles/blob/master/coc-extensions.sh
+
+nvim -c "CocInstall coc-tsserver coc-texlab coc-sh coc-python coc-json coc-clangd"
