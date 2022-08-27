@@ -21,3 +21,18 @@ tscommand*.txt
 
 # npm things
 npm-debug.log
+
+#my own
+include/qe_cdefs.h
+PW/examples/ESM_example/results/
+PW/examples/RISM_example/results/
+NEB/examples/ESM_example/results/
+environment_variables
+worktree/*
+pseudo/*
+make.log
+LIBBEEF/
+MBD/
+KCW
+QEHeat/
+external/*

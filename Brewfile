@@ -65,6 +65,7 @@ tap 'homebrew/core'
 brew 'a2ps'
 brew 'bat' # better cat
 brew 'cmake' # cmake (latest)
+brew 'diff-so-fancy'
 brew 'exa'
 brew 'fd' # find alternative
 brew 'fnm' # Fast Node version manager
