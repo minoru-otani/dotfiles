@@ -189,7 +189,25 @@ export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
 [ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# --files print each files
+# --no-ignore Don't respect ignore files
+# --hidden Search hidden files and directories
+# --follow Will follow symbolic links while travesing directories
+# -g Include or exclude files and directories for searching that match the given glob. Procede a glob with a ! to exclude it.
+#export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_COMMAND='fd --type f --color=never --hidden'
+export FZF_CTRL_T_OPTS='--preview "bat  --color=always --style=header,numbers,grid --line-range :100 {}"'
+# --color=<when> Specify when to colored output
+# --style <style-components> Configure wihich elements (line numbers, file headers, grid borders, Git modifications, ...) to display in addition to the file contents
+# --line-range <N:M> 30:40 prints lines 30 to 40
+#                      :40 prints lines  1 to 40
+#                    40:   prints lines 4o to end of the file
+#                    30:+10 prints lines 30 to 40(=30+10)
+#export FZF_ALT_C_COMMAND='fd --type d . --color=never --hidden'
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -50'"
+# fzfのプレビューウィンドウをペイン内ではなく、ウィンドウ内の全体の80%の大きさで開く
+# https://zenn.dev/eetann/articles/2022-03-19-fzf-tmux-popup
+export FZF_TMUX_OPTS="-p 80%"
 
 # add color to man pages
 export MANROFFOPT='-c'
