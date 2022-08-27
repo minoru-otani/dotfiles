@@ -172,6 +172,9 @@ fi
 ########################################################
 # Setup
 ########################################################
+#
+# XDG base directory specification
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # add a config file for ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
