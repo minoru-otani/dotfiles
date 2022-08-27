@@ -16,6 +16,9 @@ title() {
 
 error() {
     echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
+    # $0 プログラム名
+    # $1 一つ目の引数の値
+    # $2 それ移行...
     exit 1
 }
 
@@ -33,6 +36,7 @@ success() {
 
 get_linkables() {
     find -H "$DOTFILES" -maxdepth 3 -name '*.symlink'
+  # "" 挟まれた文字列を評価・展開されて文字列として返す
 }
 
 backup() {
@@ -67,9 +71,12 @@ setup_symlinks() {
     title "Creating symlinks"
 
     for file in $(get_linkables) ; do
+        # $() コマンド置換。括弧で囲んだ文字列はコマンドとして実行され、標準出力が文字列として返す
         target="$HOME/.$(basename "$file" '.symlink')"
+        # basenameでパス付きファイル名を取り出し、.symlinkという接尾辞を取り除く
         if [ -e "$target" ]; then
             info "~${target#$HOME} already exists... Skipping."
+            # ${name#pattern} nameの先頭がpatternにマッチした場合、マッチした部分を削除した状態で文字列を返す
         else
             info "Creating symlink for $file"
             ln -s "$file" "$target"
@@ -190,8 +197,8 @@ setup_macos() {
         echo "show the ~/Library folder in Finder"
         chflags nohidden ~/Library
 
-        echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
-        defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+        #echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
+        #defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
         echo "Enable subpixel font rendering on non-Apple LCDs"
         defaults write NSGlobalDomain AppleFontSmoothing -int 2
@@ -215,12 +222,61 @@ setup_macos() {
         defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
         echo "Enable tap to click (Trackpad)"
+        defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
         defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 
         echo "Enable Safari’s debug menu"
         defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
         echo "Kill affected applications"
+
+        # See; https://ottan.jp/posts/2016/07/system-preferences-terminal-defaults-mission-control/
+        echo "Show fullpath on title bar in Finder"
+        defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+        echo "Disable RichText in TextEdit"
+        defaults write com.apple.TextEdit RichText -int 0
+        echo "Disable Quarantine for unknown app"
+        defaults write com.apple.LaunchServices LSQuarantine -bool false
+        echo "Disable crash report"
+        defaults write com.apple.CrashReporter DialogType -string "none"
+        echo "Disable auto open download file"
+        defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+        echo "Enable text selection on quick look"
+        defaults write com.apple.finder QLEnableTextSelection -bool true
+        echo "Disable generate DS_Store file on external storage"
+        defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+        echo "Disable automatically rearrange Spaces based on most recent use"
+        defaults write com.apple.dock mru-spaces -bool false
+        echo "Enable Put display to Sleep in hot corner -bottom-left"
+        defaults write com.apple.dock wvous-bl-corner -int 10
+        defaults write com.apple.dock wvous-bl-modifer -int 0
+        # Dock & Menu bar
+        echo "Set the icon size of Dock items to 36 pixels"
+        defaults write com.apple.dock tilesize -int 36
+        echo "Enable Automatically hide & show menubar"
+        defaults write -g _HIHideMenuBar -bool true
+        echo "Enable Automatically hide & show dock"
+        defaults write com.apple.dock autohide -bool true
+        # Trackpad
+        echo "Enable three finger drag"
+        defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+        defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+        # Shortcut
+        # https://apple.stackexchange.com/questions/201816/how-do-i-change-mission-control-shortcuts-from-the-command-line
+        # https://apple.stackexchange.com/questions/344494/how-to-disable-default-mission-control-shortcuts-in-terminal
+        echo "Keyboard shortcut Misshon Control: Move left/right a space ctrl+alt+<-/->"
+        defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 "{
+          enabled = 1; value = { parameters = (65535, 123, 11272192); type = standard; };
+        }"
+        defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 "{
+          enabled = 1; value = { parameters = (65535, 123, 11403264); type = standard; };
+        }"
+        defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 "{
+          enabled = 1; value = { parameters = (65535, 124, 11272192); type = standard; };
+        }"
+        defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 "{
+          enabled = 1; value = { parameters = (65535, 124, 11403264); type = standard; };
+        }"
 
         for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
     else
@@ -250,7 +306,7 @@ case "$1" in
     macos)
         setup_macos
         ;;
-    all)
+    mac)
         setup_symlinks
         setup_terminfo
         setup_homebrew
@@ -258,8 +314,15 @@ case "$1" in
         setup_git
         setup_macos
         ;;
+    linux)
+      setup_symlinks
+      setup_terminfo
+      setup_homebrew
+      setup_shell
+      setup_git
+      ;;
     *)
-        echo -e $"\nUsage: $(basename "$0") {backup|link|git|homebrew|shell|terminfo|macos|all}\n"
+        echo -e $"\nUsage: $(basename "$0") {backup|link|git|homebrew|shell|terminfo|mac|linux}\n"
         exit 1
         ;;
 esac
