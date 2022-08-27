@@ -22,6 +22,7 @@ if OS.mac?
   #brew 'scalapack'
   #brew 'sphinx-doc'
   #brew 'socat'
+  brew 'xclip'
   brew 'xpdf'
   brew 'unar'
   #Applications
@@ -55,7 +56,7 @@ if OS.mac?
   mas 'GoodNotes 5', id: 1444383602
   mas 'LadioCast', id: 411213048
 elsif OS.linux?
-  brew "xclip" # access to clipboard (similar to pbcopy/pbpaste)
+  brew 'xclip' # access to clipboard (similar to pbcopy/pbpaste)
 end
 
 tap 'homebrew/bundle'
