@@ -1,10 +1,20 @@
+# set -g: セッションオプション
+# setw -g: ウィンドウオプション
+# bind-key: キーバインドを定義
+# unbind-key: キーバインドを解除
+# プレフィックスを
+
 # tmux display things in 256 colors
+# -g: globally define
 set -g default-terminal "tmux-256color"
+# -a: そのセッティングをappendする
+# -s: server optionを指定。他にも-p ペイン、-w ウィンドウ
 set -as terminal-overrides ',xterm*:Tc:sitm=\E[3m'
 
 set -g history-limit 20000
 
 # automatically renumber tmux windows
+# Windowを閉じた時に、他のwindowはその番号を詰めっ
 set -g renumber-windows on
 
 # unbind default prefix and set it to Ctrl+a
@@ -13,23 +23,36 @@ set -g prefix C-a
 bind C-a send-prefix
 
 # for nested tmux sessions
+# https://blog.ccm-lulu.com/2013/02/tmux-nested-tmux-tmux-tmux.html
+# ローカルでtmuxを使って、リモートサーバ上でもtmuxを使う場合に、リモート側の
+# tmuxにprefixを送る時の設定
+# > ctrl+a, a コマンド
+# でリモート上でprefix+コマンドが実行できる
 bind-key a send-prefix
 
 # Activity Monitoring
+# ステータスバーの設定らしい
+# setw = set -w
 setw -g monitor-activity off
 set -g visual-activity off
 
 # Rather than constraining window size to the maximum size of any client
 # connected to the *session*, constrain window size to the maximum size of any
 # client connected to *that window*. Much more reasonable.
+# サイズの異なる端末からアクセスした時に随時ウィンドウサイズを変更
 setw -g aggressive-resize on
 
 # make delay shorter
+# viのインサートモードからノーマルモードへ戻るまでのタイムラグを設定する
 set -sg escape-time 0
 
 # tile all windows
+# '='は均等割だけど、それを外して'='をtiledに割り当てる
+# layoutは、even-horizontal, even-vertial, main-horizonta, main-vertical, tiled
+# があるらしい（https://jdhao.github.io/2021/01/25/tmux_cheatsheet/）
 unbind =
-bind = select-layout tiled
+#bind = select-layout tiled
+bind = select-layout main-horizontal
 
 # cycle through panes
 # unbind C-a
@@ -40,10 +63,29 @@ bind = select-layout tiled
 set -g base-index 1
 setw -g pane-base-index 1
 
+# Neovim側にフォーカス情報を渡すのに必要
+# viからフォーカスが移動したら自動的にセーブする時などに有効
 set-option -g focus-events on
+# SSH接続を行った時にタイトルがuser@localhostのような表示のままにならないようにする
+#| Character pair | Replaced with
+#-----------------|----------------------------------------------------------------------
+#|(shell-command) | First line of the command's output
+#| #H             |   local hostname
+#| #F             |   Current window flag
+#| #I             |   Current window index
+#| #P             |   Current pane index
+#| #S             |   Session name
+#| #T             |   Current window title (a shell thing? typically user@host:path ?)
+#| #W             |   Current window name  (tmux's own, the one shown in the bottom bar)
+#| ##             |   A literal ‘#’
+#| #[attributes]  |   Colour or attribute change
+#----------------------------------------------------------------------------------------
+# Ref: https://helpful.knobs-dials.com/index.php/Screen_and_tmux
 set-option -g set-titles on
 set-option -g set-titles-string "#T - #W"
+# 自動的にwindow名を変更する
 set-window-option -g automatic-rename on
+# 自動的にrenameする時のフォーマット（今はカラ）
 set-option -g automatic-rename-format ""
 
 ######################
@@ -66,25 +108,29 @@ bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
 
+# -r: repeatable key bind
 bind -r C-h select-window -t :-
 bind -r C-l select-window -t :+
 
 # Resize pane shortcuts
-bind -r H resize-pane -L 10
-bind -r J resize-pane -D 10
-bind -r K resize-pane -U 10
-bind -r L resize-pane -R 10
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
 
 # enable mouse support for switching panes/windows
 setw -g mouse on
+set -g mouse on
 
 # set vi mode for copy mode
 setw -g mode-keys vi
 # more settings to make copy-mode more vim-like
+# copy-modeに入るとterminalのpaneのスクロールができるようになる
 unbind [
 bind Escape copy-mode
 unbind p
 bind p paste-buffer
+# -T key-table: key-tableを-nと同じようにprefixなしで実行できるようにする。
 bind -T copy-mode-vi v send -X begin-selection
 
 if-shell "uname | grep -q Darwin" {
@@ -99,4 +145,24 @@ if-shell '[[ $(uname -s) = Linux ]]' {
     bind C-v run 'tmux set-buffer "$(xclip -o -sel clipboard)"; tmux paste-buffer'
 }
 
+# Save tmux sessions automatically
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+# Last saved environment automatically restore
+set -g @continuum-restore 'on'
+# tmux is automatically started after the computer is tuned on.
+set -g @continuum-boot 'on'
+# Start iTerm instead of Terminal.app
+set -g @continuum-boot-options 'iterm'
+# Start iTerm in fullscreen
+set -g @continuum-boot-options 'iterm,fullscreen'
+# Default path is '~/.tmux/resurrect' but can be changed with
+# set -g @resurrect-dir '~/iCloud/.tmux-resurrect/'
+
+
 source-file "$DOTFILES/tmux/themes/bubbles.conf"
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+# Press <Prefix> + I to load plugins
+run '~/.tmux/plugins/tpm/tpm'
