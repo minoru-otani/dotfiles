@@ -1,0 +1,11 @@
+h_plank_si = 6.62606896e-34    # J s
+k_boltzmann_si = 1.3806504e-23  # J K^-1
+electron_si = 1.602176487e-19 # C
+electronvolt_si = 1.602176487e-19 # J
+electronmass_si = 9.10938215e-31 # Kg
+hartree_si = 4.35974394e-18 # J
+rydberg_si = hartree_si/2.0 # J
+bohr_radius_si = 0.52917720859e-10 # m
+amu_si = 1.660538782e-27 # Kg
+c_si = 2.99792458e+8 # m sec^-1
+avogadoro_si = 6.022140857e+23  # mol^-1
