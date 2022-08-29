@@ -47,7 +47,7 @@ nmap [h <Plug>(GitGutterPrevHunk)
 nmap gs <Plug>(GitGutterStageHunk)
 nmap gu <Plug>(GitGutterUndoHunk)
 nmap gv <Plug>(GitGutterPreviewHunk)
-"nmap <Leader>hu <Plug>(GitGutterRevertHunk)
+nmap gf :GitGutterFold<CR>
 
 "========================================="
 " plugin Manager: dein.vim setting
