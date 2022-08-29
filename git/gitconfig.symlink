@@ -14,7 +14,7 @@
     pnv = push --no-verify
     co = checkout
     cob = checkout -b
-    s = status --short --branch
+    s = status --short --branch --ignore-submodules=dirty
     ss  = status
     br = branch -v
     addnw = "!sh -c 'git diff -U0 -w --no-color \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero -'"

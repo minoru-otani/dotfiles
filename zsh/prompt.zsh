@@ -67,7 +67,8 @@ git_status() {
     GIT_STATUS_DIVERGED=$(dotfiles::print '012' '⇕')
     GIT_STATUS_CLEAN=$(dotfiles::print '002' '✔')
 
-    INDEX=$(command git status --porcelain -b 2>/dev/null)
+#    INDEX=$(command git status --porcelain -b 2>/dev/null)
+    INDEX=$(command git status --porcelain --ignore-submodules=dirty -b 2>/dev/null)
 
     # Check for untracked files
     if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
