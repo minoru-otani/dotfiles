@@ -70,6 +70,7 @@ brew 'diff-so-fancy'
 brew 'exa'
 brew 'fd' # find alternative
 brew 'fnm' # Fast Node version manager
+brew 'fortran-language-server'
 brew 'fzf' # Fuzzy file searcher, used in scripts and in vim
 brew 'git' # Git version control (latest version)
 brew 'git-delta' # a better git diff
