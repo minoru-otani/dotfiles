@@ -59,6 +59,7 @@ git_status() {
     GIT_STATUS_MODIFIED=$(dotfiles::print '003' '!')
     GIT_STATUS_UNTRACKED=$(dotfiles::print '009' '?')
     GIT_STATUS_RENAMED=$(dotfiles::print '208' '»')
+    GIT_STATUS_TYPECHG=$(dotfiles::print '208' '»')
     GIT_STATUS_DELETED=$(dotfiles::print '017' '✘')
     GIT_STATUS_STASHED=$(dotfiles::print '003' '$')
     GIT_STATUS_UNMERGED=$(dotfiles::print '016' '=')
@@ -78,7 +79,7 @@ git_status() {
     # R: renamed
     # C: copied
     # U: unmerged
-    # T: typechange <- this doesnot included below
+    # T: typechange <- adhock introduction
     #
     # grepの正規表現
     # [] 括弧内の任意の一文字
@@ -104,6 +105,13 @@ git_status() {
     # Check for renamed files
     if $(echo "$INDEX" | command grep '^R[ MD] ' &> /dev/null); then
         git_status="$GIT_STATUS_RENAMED$git_status"
+    fi
+
+    # Check for typechanged files
+    if $(echo "$INDEX" | command grep '^T  ' &> /dev/null); then
+        git_status="$GIT_STATUS_TYPECHG$git_status"
+    elif $(echo "$INDEX" | command grep ' T ' &> /dev/null); then
+        git_status="$GIT_STATUS_TYPECHG$git_status"
     fi
 
     # Check for deleted files
