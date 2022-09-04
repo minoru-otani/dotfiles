@@ -71,6 +71,18 @@ git_status() {
     INDEX=$(command git status --porcelain --ignore-submodules=dirty -b 2>/dev/null)
 
     # Check for untracked files
+    # gitのstatus (XY)はXがindexのstatus、Yがworktreeのstatus
+    # M: modified
+    # A: added
+    # D: deleted
+    # R: renamed
+    # C: copied
+    # U: unmerged
+    # T: typechange
+    #
+    # grepの正規表現
+    # [] 括弧内の任意の一文字
+    # ^/$ 行の先頭/末尾
     if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
         git_status="$GIT_STATUS_UNTRACKED$git_status"
     fi
