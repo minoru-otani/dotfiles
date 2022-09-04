@@ -78,7 +78,7 @@ git_status() {
     # R: renamed
     # C: copied
     # U: unmerged
-    # T: typechange
+    # T: typechange <- this doesnot included below
     #
     # grepの正規表現
     # [] 括弧内の任意の一文字
