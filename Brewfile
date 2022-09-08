@@ -20,7 +20,7 @@ if OS.mac?
   brew 'open-mpi'
   brew 'python-tk'
   brew 'povray'
-  #brew 'scalapack'
+  brew 'scalapack'
   #brew 'sphinx-doc'
   #brew 'socat'
   brew 'xclip'
