@@ -139,6 +139,14 @@ let g:airline#extensions#hunks#enabled = 0
 "========================
 let g:python3_host_prog = '/usr/local/bin/python3'
 
+"=======================
+"jupytextの設定
+"=======================
+" セルの区切り文字をVSCode互換の # %% に指定する
+let g:jupytext_fmt = 'py:percent'
+" vimのPython向けシンタックスハイライトを有効にする
+let g:jupytext_filetype_map = {'py': 'python'}
+
 "=========================
 "Cocのショートカットを設定
 "=========================
