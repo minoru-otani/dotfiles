@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
 # install jupyterlab
-pip install --upgrade pip
-pip install --no-cache-dir jupyterlab \
+#pip install --upgrade pip
+#pip install --no-cache-dir jupyterlab \
+python3 -m pip install --no-cache-dir \
+  jupyterlab \
+  jupyter_packaging \
+  versioneer \
   nglview \
   ipywidgets \
   graphviz \
