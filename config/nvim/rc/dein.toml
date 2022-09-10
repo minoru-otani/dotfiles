@@ -42,3 +42,7 @@ hook_add ='''
 
 [[plugins]]
 repo = 'jupyter-vim/jupyter-vim'
+hook_add ='''
+  let g:jupyter_mapkeys = 0
+  nnoremap <buffer> <silent> <localleader>x :JupyterSendCell<CR>
+'''
