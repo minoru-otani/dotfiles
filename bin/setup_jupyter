@@ -12,6 +12,9 @@ python3 -m pip install --no-cache-dir \
   graphviz \
   requests \
   jupyterlab_vim \
+  jupyter \
+  qtconsole \
+  PyQt5 \
   qeschema \
   git+https://gitlab.com/minoru-otani/ase.git@qe_rism \
   git+https://github.com/QEF/xsdtools.git
