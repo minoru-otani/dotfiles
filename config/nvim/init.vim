@@ -40,14 +40,20 @@ nnoremap <silent> <leader>b :Buffers<CR>
 nnoremap <silent> <leader>h :History<CR>
 nnoremap <silent> <leader>r :Rg<CR>
 "Git gutter
+"一旦GitGutterのkeymapをなしにする
 let g:gitgutter_map_keys = 0
 "https://wonderwall.hatenablog.com/entry/2016/03/26/211710
-nmap ]h <Plug>(GitGutterNextHunk)
-nmap [h <Plug>(GitGutterPrevHunk)
+"https://qiita.com/youichiro/items/b4748b3e96106d25c5bc
+nmap g] <Plug>(GitGutterNextHunk)
+nmap g[ <Plug>(GitGutterPrevHunk)
 nmap gs <Plug>(GitGutterStageHunk)
 nmap gu <Plug>(GitGutterUndoHunk)
 nmap gv <Plug>(GitGutterPreviewHunk)
 nmap gf :GitGutterFold<CR>
+" 記号の色を変更する
+highlight GitGutterAdd ctermfg=green
+highlight GitGutterChange ctermfg=blue
+highlight GitGutterDelete ctermfg=red
 
 "========================================="
 " plugin Manager: dein.vim setting
