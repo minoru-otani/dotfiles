@@ -16,7 +16,7 @@ python3 -m pip install --no-cache-dir \
   qtconsole \
   PyQt5 \
   qeschema \
-  git+https://gitlab.com/minoru-otani/ase.git@qe_rism \
+  git+https://gitlab.com/minoru-otani/ase.git \
   git+https://github.com/QEF/xsdtools.git
 
 # install jupyterlab extensions
