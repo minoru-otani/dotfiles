@@ -181,6 +181,7 @@ function setup_terminfo() {
 setup_macos() {
     title "Configuring macOS"
     if [[ "$(uname)" == "Darwin" ]]; then
+        #Finder
         echo "Finder: set default view as list"
         #Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
         defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
@@ -194,6 +195,9 @@ setup_macos() {
         defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
         echo "show the ~/Library folder in Finder"
         chflags nohidden ~/Library
+        #Preferences
+        echo "Disable dictation shortcut"
+        defaults write com.apple.HIToolbox AppleDictationAutoEnable -int 1
         #echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
         #defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
         echo "Enable subpixel font rendering on non-Apple LCDs"
