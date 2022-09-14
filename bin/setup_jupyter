@@ -4,8 +4,8 @@
 #pip install --upgrade pip
 #pip install --no-cache-dir jupyterlab \
 python3 -m pip install --no-cache-dir \
-  jupyterlab \
   jupyter_packaging \
+  jupyterlab \
   versioneer \
   nglview \
   ipywidgets \
@@ -16,6 +16,7 @@ python3 -m pip install --no-cache-dir \
   qtconsole \
   PyQt5 \
   qeschema \
+  xeus-python \
   git+https://gitlab.com/minoru-otani/ase.git \
   git+https://github.com/QEF/xsdtools.git
 
