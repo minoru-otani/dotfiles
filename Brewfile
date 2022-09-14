@@ -30,7 +30,6 @@ if OS.mac?
   #cask 'background-music'
   cask '1password'
   cask 'adobe-acrobat-reader'
-  cask 'anaconda'
   cask 'deepl'
   cask 'docker'
   cask 'firefox'
