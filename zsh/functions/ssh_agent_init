@@ -1,0 +1,2 @@
+current_dir=$PWD
+cd ~/.ssh; ssh-add -A; cd $current_dir
