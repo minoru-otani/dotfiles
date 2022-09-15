@@ -5,14 +5,15 @@
 #pip install --no-cache-dir jupyterlab \
 python3 -m pip install --no-cache-dir \
   jupyter_packaging \
-  jupyterlab \
   versioneer \
+  jupyter \
+  jupyterlab \
   nglview \
   ipywidgets \
   graphviz \
   requests \
   jupyterlab_vim \
-  jupyter \
+  jupytext \
   qtconsole \
   PyQt5 \
   qeschema \
