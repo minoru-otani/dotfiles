@@ -1,3 +1,4 @@
+set terminal qt font "Helvetica"
 h_plank_si = 6.62606896e-34    # J s
 k_boltzmann_si = 1.3806504e-23  # J K^-1
 electron_si = 1.602176487e-19 # C
