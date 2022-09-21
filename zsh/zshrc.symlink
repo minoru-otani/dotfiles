@@ -254,7 +254,7 @@ function cdwt() {
 fbr() {
   local branches branch
   branches=$(git --no-pager branch -vv) &&
-  branch=$(echo "$branches" | fzf +m) &&
+  branch=$(echo "$branches" | fzf +m --cycle) &&
   git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
 }
 # fco - checkout git branch/tag
@@ -269,7 +269,7 @@ fco() {
   target=$(
     (echo "$branches"; echo "$tags") |
     fzf --no-hscroll --no-multi -n 2 \
-        --ansi) || return
+        --ansi --cycle) || return
   git checkout $(awk '{print $2}' <<<"$target" )
 }
 # fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
@@ -285,7 +285,7 @@ fco_p() {
   target=$(
     (echo "$branches"; echo "$tags") |
     fzf-tmux -p 80%,80% --no-hscroll --no-multi -n 2 \
-        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
+        --ansi --cycle --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
   git checkout $(awk '{print $2}' <<<"$target" )
 }
 # fcoc - checkout git commit
@@ -382,8 +382,8 @@ alias cleanup="find . -name '*.DS_Store' -type f -ls -delete"
 alias clsym="find -L . -name . -o -type d -prune -o -type l -exec rm {} +"
 
 # git aliases
-alias gs='git s'
-alias glog="git l"
+#alias gs='git s'
+#alias glog="git l"
 
 # tmux aliases
 alias ta='tmux attach'
