@@ -29,6 +29,7 @@ PW/examples/RISM_example/results/
 NEB/examples/ESM_example/results/
 environment_variables
 worktree/*
+tempdir
 pseudo/*
 make.log
 LIBBEEF/
