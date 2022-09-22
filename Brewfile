@@ -23,6 +23,7 @@ if OS.mac?
   brew 'scalapack'
   #brew 'sphinx-doc'
   #brew 'socat'
+  brew 'wkhtmltopdf'
   brew 'xclip'
   brew 'xpdf'
   brew 'unar'
