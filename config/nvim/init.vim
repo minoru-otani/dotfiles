@@ -24,6 +24,10 @@ let mapleader = "\<Space>"
 let maplocalleader = ","
 let g:tex_flavor = "latex"
 
+"Close buffer without closing the window
+" https://stackoverflow.com/questions/1444322/how-can-i-close-a-buffer-without-closing-the-window
+map <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
+
 "Tab window switch
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
