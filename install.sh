@@ -35,8 +35,11 @@ success() {
 }
 
 get_linkables() {
-    find -H "$DOTFILES" -maxdepth 3 -name '*.symlink'
+  find -H "$DOTFILES" ! \( -path "${DOTFILES}/worktree" -prune \) -maxdepth 3 -name '*.symlink'
   # "" 挟まれた文字列を評価・展開されて文字列として返す
+  # ! で否定する。-notでも良い。
+  # \(\)とカッコで囲って先に優先的に評価させる。「優先的」に関しては、
+  # https://www.putorius.net/linux-find-command.htmlの"Force precedence operator"を参照
 }
 
 backup() {
