@@ -18,11 +18,10 @@ set shortmess+=c       "https://qiita.com/koara-local/items/40153e1135bb8101cf2d
 
 "===========================================
 "Leader キーをデフォルトの"\"からspaceに変更
-"Local leaderキーを割り当てる(Latex用)
+"Local leaderキーを割り当てる
 "===========================================
 let mapleader = "\<Space>"
 let maplocalleader = ","
-let g:tex_flavor = "latex"
 
 "Close buffer without closing the window
 " https://stackoverflow.com/questions/1444322/how-can-i-close-a-buffer-without-closing-the-window
