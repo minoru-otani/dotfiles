@@ -35,6 +35,8 @@ nmap <C-h> <Plug>WinMoveLeft
 nmap <C-j> <Plug>WinMoveDown
 nmap <C-k> <Plug>WinMoveUp
 nmap <C-l> <Plug>WinMoveRight
+"Zoom
+nmap <leader>z <Plug>Zoom
 "FZF
 nnoremap <silent> <leader>f :Files<CR>
 nnoremap <silent> <leader>g :GFiles<CR>
