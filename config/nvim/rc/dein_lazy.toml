@@ -6,11 +6,3 @@ hook_source='''
   let g:vimtex_view_general_viewer = 'displayline'
   let g:vimtex_view_general_options = '@line @pdf @tex'
 '''
-
-[[plugins]]
-repo = 'goerz/jupytext.vim'
-on_ft=['ipynb']
-
-[[plugins]]
-repo = 'jupyter-vim/jupyter-vim'
-on_ft=['ipynb']
