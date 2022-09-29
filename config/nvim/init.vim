@@ -231,3 +231,18 @@ endfunction
 
 nnoremap <silent> <C-t> :<C-u>call CocActionAsync('jumpDefinition', CocJumpAction())<CR>
 
+" nvimを立ち上げた時にpython仮想環境をactivateして使う
+" https://rcmdnk.com/blog/2020/08/11/computer-vim/
+if has ('nvim') && !filereadable(expand('~/.vim_no_python'))
+  let s:python3 = system('which python3')
+  if strlen(s:python3) != 0
+    let s:python3_dir = $HOME . '/.vim/python3'
+    if ! isdirectory(s:python3_dir)
+      echo 'prepare python virtual environment into ~/.vim ...'
+      call system('python3 -m venv ' . s:python3_dir)
+      call system('source ' . s:python3_dir . '/bin/activate && python3 -m pip install pynvim jedi pylint fortls')
+    endif
+    let g:python3_host_prog = s:python3_dir . '/bin/python3'
+    let $PATH = s:python3_dir . '/bin:' .$PATH
+  endif
+endif
