@@ -162,9 +162,12 @@ typeset -A plugins
 zfetch mafredri/zsh-async async.plugin.zsh
 zfetch zsh-users/zsh-syntax-highlighting
 zfetch zsh-users/zsh-autosuggestions
-zfetch chriskempson/base16-shell
+zfetch grigorii-zander/zsh-npm-scripts-autocomplete
+#zfetch chriskempson/base16-shell
 # tab補完にfzfを導入して使いやすくする
 zfetch Aloxaf/fzf-tab
+# ディレクトリ移動で自動的にvenvをactivate/deactivate
+zfetch Tarrasch/zsh-autoenv
 
 # fnmはnode.jsのバージョンを管理するコマンド
 if [[ -x "$(command -v fnm)" ]]; then
