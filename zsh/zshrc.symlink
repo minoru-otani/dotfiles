@@ -1,6 +1,7 @@
 export ZSH=$DOTFILES/zsh
 
 if [[ -d $DOTFILES/zsh/functions ]]; then
+    # -Uを付けるとユーザ側で定義したaliasが関数に干渉するのを防ぐ
     for func in $DOTFILES/zsh/functions/*(:t); autoload -U $func
 fi
 
@@ -38,7 +39,7 @@ fi
 # initialize autocomplete
 autoload -U compinit add-zsh-hook
 # 補完機能を有効にする
-# -Uを付けるとユーザ側で定義したaliasに上書きされるのを防ぐ
+# -Uを付けるとユーザ側で定義したaliasが関数に干渉するのを防ぐ
 # add-zsh-hook: hook関数を登録する。add-zsh-hook <hook名><関数名>
 # hook名とはどういう時に関数が呼び出されるかというイベント種別を表す文字列
 # https://qiita.com/mollifier/items/558712f1a93ee07e22e2
