@@ -255,6 +255,8 @@ setup_macos() {
         echo "Enable three finger drag"
         defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
         defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+        echo "Disable desktop switching animation"
+        defaults write com.apple.dock expose-animation-duration -float 0.1
         # Shortcut
         # https://apple.stackexchange.com/questions/201816/how-do-i-change-mission-control-shortcuts-from-the-command-line
         # https://apple.stackexchange.com/questions/344494/how-to-disable-default-mission-control-shortcuts-in-terminal
