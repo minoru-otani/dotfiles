@@ -67,6 +67,7 @@ tap 'homebrew/core'
 brew 'a2ps'
 brew 'bat' # better cat
 brew 'cmake' # cmake (latest)
+brew 'compiledb' # generate compile_commands.json from Makefile
 brew 'diff-so-fancy'
 brew 'exa'
 brew 'fd' # find alternative
