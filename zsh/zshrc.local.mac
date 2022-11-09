@@ -65,11 +65,11 @@ export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
 
 # https://flying-foozy.hatenablog.com/entry/20140203/1391434470
 # https://qiita.com/kondounagi/items/c0c76f4b89494c5bcd02
-export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
-export LC_CTYPE="UTF-8"
+#export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
+#export LC_CTYPE="UTF-8"
 # cygnusでvimが壊れている問題
 # https://senooken.jp/post/2020/09/17/
 # https://qiita.com/constdrop/items/524d9f11fc75d29ca1c1
 # https://rksz.hateblo.jp/entry/2013/01/13/155813
 # (このページの安直な方法でとりあえずたいしょ）
-alias sshcygnus="TERM=xterm-256color-italic ssh cygnus"
+alias sshcygnus="TERM=xterm-256color-italic LC_CTYPE=ja_JP.UTF-8 ssh cygnus"
