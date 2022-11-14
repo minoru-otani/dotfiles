@@ -1,0 +1,11 @@
+versioneer
+jupyter_packaging
+jupyter
+jupyterlab
+nglview
+matplotlib
+ipywidgets
+graphviz
+requests
+jupyterlab_vim
+jupytext
