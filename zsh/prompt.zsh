@@ -174,4 +174,8 @@ add-zsh-hook precmd () {
 
 
 export PROMPT='%(?.%F{006}.%F{009})$PROMPT_SYMBOL%f '
-export RPROMPT="$(suspended_jobs)"
+#https://qiita.com/gorohash/items/e622459b330cbaef5fe5
+#OSによっては、RPROMPTの右側に意味のないスペースが入ってしまい。
+#左側のプロンプトがカーソルと干渉する。エスケープシーケンスも
+#文字数とカウントして右側にスペースを取ってしまうのが原因らしい。
+export RPROMPT="%{$(suspended_jobs)%}"
