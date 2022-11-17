@@ -60,7 +60,7 @@ git_status() {
     GIT_STATUS_UNTRACKED=$(dotfiles::print '009' '?')
     GIT_STATUS_RENAMED=$(dotfiles::print '208' '»')
     GIT_STATUS_TYPECHG=$(dotfiles::print '208' '»')
-    GIT_STATUS_DELETED=$(dotfiles::print '017' '✘')
+    GIT_STATUS_DELETED=$(dotfiles::print '161' '✘')
     GIT_STATUS_STASHED=$(dotfiles::print '003' '$')
     GIT_STATUS_UNMERGED=$(dotfiles::print '016' '=')
     GIT_STATUS_AHEAD=$(dotfiles::print '012' '⇡')
@@ -168,7 +168,7 @@ async_start_worker vcs_info
 async_register_callback vcs_info git_status_done
 
 add-zsh-hook precmd () {
-    print -P "\n%F{005}%~ $(node_prompt)"
+    print -P "\n\e[1m%F{075}%~\e[0m $(node_prompt)"
     async_job vcs_info git_status "$PWD"
 }
 
@@ -178,4 +178,5 @@ export PROMPT='%(?.%F{006}.%F{009})$PROMPT_SYMBOL%f '
 #OSによっては、RPROMPTの右側に意味のないスペースが入ってしまい。
 #左側のプロンプトがカーソルと干渉する。エスケープシーケンスも
 #文字数とカウントして右側にスペースを取ってしまうのが原因らしい。
-export RPROMPT="%{$(suspended_jobs)}%"
+#完全に治らないので、元に戻す。
+export RPROMPT="$(suspended_jobs)"
