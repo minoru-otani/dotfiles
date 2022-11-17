@@ -178,4 +178,4 @@ export PROMPT='%(?.%F{006}.%F{009})$PROMPT_SYMBOL%f '
 #OSによっては、RPROMPTの右側に意味のないスペースが入ってしまい。
 #左側のプロンプトがカーソルと干渉する。エスケープシーケンスも
 #文字数とカウントして右側にスペースを取ってしまうのが原因らしい。
-export RPROMPT="%{$(suspended_jobs)%}"
+export RPROMPT="%{$(suspended_jobs)}%"
