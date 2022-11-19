@@ -9,3 +9,5 @@ graphviz
 requests
 jupyterlab_vim
 jupytext
+git+https://gitlab.com/minoru-otani/ase.git \
+git+https://github.com/QEF/xsdtools.git
