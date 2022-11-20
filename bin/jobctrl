@@ -4,7 +4,7 @@ usage(){
   Usage: $0 [OPTIONS]
   -h,--help   Display help message
   -s,--super-computer
-              specify computer site. Currently available sites: ohtaka, cynus
+              specify computer site. Currently available sites: ohtaka, cynus, fugaku
   -b,--batch-file
               file name of a batch script
   -p,--project-name
@@ -34,6 +34,14 @@ _EOT_
 }
 
 ohtaka(){
+  QUEUE=${_QUEUE:?" undefined"}
+  NODE=${_NODE:?" undefined"}
+  ELAPS=${_ELAPS:?" undefined"}
+  OMP=${_OMP:-1}
+  BINDIR=${_BINDIR:?" undefined"}
+  INPFILE=${_INPFILE:?" undefined"}
+  OUTFILE=${_OUTFILE:?" undefined"}
+  PROC=$(($NODE*128/$OMP))
   if [ "$INFO" = "YES" ]; then
     cat<<_EOT_
     1680 nodes * 2 CPUS * 64 cores
@@ -53,9 +61,21 @@ ohtaka(){
       L144cpu -- 120 hour |   144 nodes
     Commands:
       ulimit -a, chquota, point,
-      sbatch, squeue, scancel, sacct
+      sbatch, squeue, scancel, pstat, sacct
 _EOT_
   fi
+  cat<<_EOT_> $FILE_BATCH
+  #!/bin/sh
+  #SBATCH -p $QUEUE
+  #SBATCH -c $OMP
+  #SBATCH -N $NODE
+  #SBATCH -n $PROC
+  #PBS -l elapstim_req=$ELAPS
+  #PBS -T NQSV_MPI_VER=19.0.5
+  #PBS -v BINDIR=$BINDIR
+  module load intmpi/\${NQSV_MPI_VER}
+  mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+_EOT_
 }
 
 cygnus(){
@@ -157,7 +177,7 @@ case "${SUPER_COMP:0:6}" in
   cygnus) cygnus;;
   fn01sv) fugaku;; # hostname of Fugaku
   pisces) pisces;;
-  *) echo "Computer site must appear"
+  *) echo "Computer site must be defined"
     usage;;
 esac
 
