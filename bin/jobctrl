@@ -1,4 +1,99 @@
 #!/usr/bin/env bash
+usage(){
+  cat<<EOUSAGE
+  Usage: $0 [OPTIONS]
+  -h,--help   Display help message
+  -s,--super-computer
+              specify computer site. Currently available sites: ohtaka, cynus
+  -b,--batch-file
+              file name of a batch script
+  -p,--project-name
+              name of the project (budget)
+  -e,--elaps 
+              elaps time
+  -q,--queue
+              queue name
+  -n,--node
+              number of nodes
+  -o,--omp
+              number of omp threads
+  -b,--bindir
+              plade of binary file
+  --inp-file
+              input file for calculation
+  --out-file
+              output file for calculation
+EOUSAGE
+}
+
+fugaku(){
+  if [ "$INFO" = "YES" ]; then
+    cat<<_EOT_
+_EOT_
+  fi
+}
+
+ohtaka(){
+  if [ "$INFO" = "YES" ]; then
+    cat<<_EOT_
+    1680 nodes * 2 CPUS * 64 cores
+    1) Batch queue
+      debug   --  30 min  |     8 nodes
+      F1cpu   --  24 hour |     1 nodes
+      L1cpu   -- 120 hour |     1 nodes
+      F4cpu   --  24 hour |     4 nodes
+      L4cpu   -- 120 hour |     4 nodes
+      F16cpu  --  24 hour |    16 nodes
+      L16cpu  -- 120 hour |    16 nodes
+      F36cpu  --  24 hour |    36 nodes
+      L36cpu  -- 120 hour |    36 nodes
+      F72cpu  --  24 hour |    72 nodes
+      L72cpu  -- 120 hour |    72 nodes
+      F144cpu --  24 hour |   144 nodes
+      L144cpu -- 120 hour |   144 nodes
+    Commands:
+      ulimit -a, chquota, point,
+      sbatch, squeue, scancel, sacct
+_EOT_
+  fi
+}
+
+cygnus(){
+  PRJNAME=${_PRJNAME:-"EIS0001"}
+  QUEUE=${_QUEUE:?" undefined"}
+  NODE=${_NODE:?" undefined"}
+  ELAPS=${_ELAPS:?" undefined"}
+  OMP=${_OMP:-1}
+  BINDIR=${_BINDIR:?" undefined"}
+  INPFILE=${_INPFILE:?" undefined"}
+  OUTFILE=${_OUTFILE:?" undefined"}
+  if [ "$INFO" = "YES" ]; then
+    cat<<_EOT_
+    46 nodes * 2 CPUs * 12 cores
+    1) Interactive queue
+      debug   --  1 hour |      2 nodes
+    2) Batch queue
+      gpu     -- 24 hour |     78 nodes
+      gen_S   -- 24 hour |   1~16 nodes
+      gen_M   -- 24 hour |  17~32 nodes
+      gen_L   -- 24 hour |  33~78 nodes
+    Commands:
+      qsub, qstat, qdel, sstat
+_EOT_
+  fi
+  cat<<_EOT_> $FILE_BATCH
+  #!/bin/bash
+  #PBS -A $PRJNAME
+  #PBS -q $QUEUE
+  #PBS -b $NODE
+  #PBS -l elapstim_req=$ELAPS
+  #PBS -T NQSV_MPI_VER=19.0.5
+  #PBS -v OMP_NUM_THREADS=$OMP
+  #PBS -v BINDIR=$BINDIR
+  module load intmpi/\${NQSV_MPI_VER}
+  mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+_EOT_
+}
 
 # 配列の宣言
 POSITIONAL_ARGS=()
@@ -11,12 +106,30 @@ POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
     case $1 in
         #//// ここにオプションを追加していきます ////
-        -s|--search-path)  SEARCH_PATH="$2"; shift; shift;;
-        -s=*|--search-path=*) ARG="$2";  SEARCH_PATH="${ARG#*=}"; unset ARG; shift;;
-        --flag)  FLAG="YES"; shift;;  #// Without value
-        --help)  HELP="YES"; shift;;  #// Without value
+        -s|--super-computer) _SUPER_COMP="$2"; shift; shift;;
+        -s=*|--super-computer=*) ARG="$1"; _SUPER_COMP="${ARG#*=}"; unset ARG; shift;;
+        -f|--file-batch) FILE_BATCH="$2"; shift; shift;;
+        -f=*|--file-batch=*) ARG="$1"; FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
+        -p|--project-name) _PRJNAME="$2"; shift; shift;;
+        -p=*|--project-name=*) ARG="$1"; PRJNAME="${ARG#*=}"; unset ARG; shift;;
+        -q|--queue) _QUEUE="$2"; shift; shift;;
+        -q=*|--queue=*) ARG="$1"; _QUEUE="${ARG#*=}"; unset ARG; shift;;
+        -n|--node) _NODE="$2"; shift; shift;;
+        -n=*|--node=*) ARG="$1"; _NODE="${ARG#*=}"; unset ARG; shift;;
+        -e|--elaps) _ELAPS="$2"; shift; shift;;
+        -e=*|--elaps=*) ARG="$1"; _ELAPS="${ARG#*=}"; unset ARG; shift;;
+        -o|--openmp) _OMP="$2"; shift; shift;;
+        -o=*|--openmp=*) ARG="$1"; _OMP="${ARG#*=}"; unset ARG; shift;;
+        -b|--bindir) _BINDIR="$2"; shift; shift;;
+        -b=*|--bindir=*) ARG="$1"; BINDIR="${ARG#*=}"; unset ARG; shift;;
+        --inp-file) _INPFILE="$2"; shift; shift;;
+        --inp-file=*) ARG="$1"; _INPFILE="${ARG#*=}"; unset ARG; shift;;
+        --out-file) _OUTFILE="$2"; shift; shift;;
+        --out-file=*) ARG="$1"; _OUTFILE="${ARG#*=}"; unset ARG; shift;;
+        --info) INFO="YES"; shift;;  #// Without value
+        --help) usage; shift;;  #// Without value
         # += 配列、変数に値を追加する
-        --) shift;  POSITIONAL_ARGS+=("$@"); set --;;
+        --) shift; POSITIONAL_ARGS+=("$@"); set --;;
         --*) echo "[ERROR] Unknown option $1"; exit 1;;
         -*) #// Multiple short name options. e.g.-fh
             OPTIONS=$1
@@ -32,12 +145,25 @@ while [[ $# -gt 0 ]]; do
         *) POSITIONAL_ARGS+=("$1"); shift;;
     esac
 done
+
 # set -- aaa bbb ccc, 位置引数を上書きする。
 # [@]配列の全ての値を参照
 set -- "${POSITIONAL_ARGS[@]}"  #// set $1, $2, ...
 unset POSITIONAL_ARGS
 
-echo "\$SEARCH_PATH = \"${SEARCH_PATH}\""
+SUPER_COMP=${_SUPER_COMP:-$(hostname -s)}
+case "$SUPER_COMP" in
+  ohtaka) ohtaka;;
+  cygnus) cygnus;;
+  fugaku) fugaku;;
+  pisces) pisces;;
+  *) echo "Computer site must appear"
+    usage;;
+esac
+
+echo "\$COMP_SITE = \"${SUPER_COMP}\""
+echo "\$BATCH_FILE = \"${BATCH_FILE}\""
+echo "\$INFO        = \"${INFO}\""
 echo "\$FLAG        = \"${FLAG}\""
 echo "\$HELP        = \"${HELP}\""
 echo "\$1           = \"$1\""
