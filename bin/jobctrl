@@ -152,10 +152,9 @@ set -- "${POSITIONAL_ARGS[@]}"  #// set $1, $2, ...
 unset POSITIONAL_ARGS
 
 SUPER_COMP=${_SUPER_COMP:-$(hostname -s)}
-echo "${SUPER_COMP:0:6}"
-case "$SUPER_COMP" in
-  ohtaka) ohtaka1;;
-  cygnus) cygnus01;;
+case "${SUPER_COMP:0:6}" in
+  ohtaka) ohtaka;;
+  cygnus) cygnus;;
   fn01sv) fugaku;; # hostname of Fugaku
   pisces) pisces;;
   *) echo "Computer site must appear"
