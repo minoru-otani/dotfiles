@@ -60,6 +60,7 @@ backup() {
     done
 
     for filename in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc"; do
+        # ! 終了ステータスを反転させる
         if [ ! -L "$filename" ]; then
             echo "backing up $filename"
             cp -rf "$filename" "$BACKUP_DIR"
