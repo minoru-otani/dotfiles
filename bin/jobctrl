@@ -9,7 +9,7 @@ usage(){
               file name of a batch script
   -p,--project-name
               name of the project (budget)
-  -e,--elaps 
+  -e,--elaps
               elaps time
   -q,--queue
               queue name
