@@ -79,6 +79,8 @@ _EOT_
 }
 
 cygnus(){
+  # ${変数:-デフォルト値}
+  # ${変数:?"メッセージ"} ← メッセージを出力して終了
   PRJNAME=${_PRJNAME:-"EIS0001"}
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
