@@ -60,13 +60,12 @@ _EOT_
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
-#  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
   IMAGES=${_IMAGES:-1}
   POOLS=${_POOLS:-1}
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  if [ -v $FILE_BATCH ]; then
+  if [ -z $FILE_BATCH ]; then
     cat<<_EOT_ | sbatch > ./stdout
 #!/bin/sh
 #SBATCH -p $QUEUE
@@ -114,22 +113,26 @@ _EOT_
   fi
   # ${変数:-デフォルト値}
   # ${変数:?"メッセージ"} ← メッセージを出力して終了
-  PRJNAME=${_PRJNAME:-"EIS0001"}
+  PRJNAME=${_PRJNAME:-"EIS00001"}
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
   MPIRANK=${_MPIRANK:-24}
   OMP=${_OMP:-1}
-  ELAPS=${_ELAPS:?" undefined"}
+  ELAPS=${_ELAPS:?" undefined"} # format hh:mm:ss
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
-  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
+  if [ $(($OMP*$MPIRANK)) -gt 24 ]; then
+    echo "Error: OMP_NUM_THREADS * MPI Rank exceeds 24"
+    exit
+  fi
   IMAGES=${_IMAGES:-1}
   POOLS=${_POOLS:-1}
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  cat<<_EOT_> $FILE_BATCH
+  if [ -z $FILE_BATCH ]; then
+  cat<<_EOT_ | qsub > ./stdout
 #!/bin/bash
 #PBS -A $PRJNAME
 #PBS -q $QUEUE
@@ -141,6 +144,25 @@ _EOT_
 module load intmpi/\${NQSV_MPI_VER}
 mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
+    JOBID=`cat ./stdout | awk '{print $4}'`
+    echo $JOBID
+    rm -f ./stdout
+    #echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+    echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+  else
+    cat<<_EOT_> $FILE_BATCH
+#!/bin/bash
+#PBS -A $PRJNAME
+#PBS -q $QUEUE
+#PBS -b $NODE
+#PBS -l elapstim_req=$ELAPS
+#PBS -T NQSV_MPI_VER=19.0.5
+#PBS -v OMP_NUM_THREADS=$OMP
+#PBS -v BINDIR=$BINDIR
+module load intmpi/\${NQSV_MPI_VER}
+mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+_EOT_
+  fi
 }
 
 # 配列の宣言
@@ -221,10 +243,10 @@ case "${SUPER_COMP:0:6}" in
     usage;;
 esac
 
-echo "\$COMP_SITE = \"${SUPER_COMP}\""
-echo "\$BATCH_FILE = \"${BATCH_FILE}\""
-echo "\$INFO        = \"${INFO}\""
-echo "\$FLAG        = \"${FLAG}\""
-echo "\$HELP        = \"${HELP}\""
-echo "\$1           = \"$1\""
-echo "\$2           = \"$2\""
+#echo "\$COMP_SITE = \"${SUPER_COMP}\""
+#echo "\$BATCH_FILE = \"${BATCH_FILE}\""
+#echo "\$INFO        = \"${INFO}\""
+#echo "\$FLAG        = \"${FLAG}\""
+#echo "\$HELP        = \"${HELP}\""
+#echo "\$1           = \"$1\""
+#echo "\$2           = \"$2\""
