@@ -13,10 +13,17 @@ usage(){
   -e,--elaps  Elaps time
   -q,--queue  Queue name
   -n,--node   Number of nodes
+  -m,--mpi-rank
+              Number of MPI rank
   -o,--omp    Number of omp threads
   -b,--bindir Plade of binary file
   --inp-file  Input file for calculation
   --out-file  Output file for calculation
+  --images    Number of images
+  --pools     Number of k-point group
+  --bands     Number of band group
+  --tasks     Number of task group for 3D FFT
+  --diag      Linear algebra group n^2 (n^2 < PW group)
 EOUSAGE
 }
 
