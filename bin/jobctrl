@@ -60,13 +60,14 @@ _EOT_
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
-  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
+#  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
   IMAGES=${_IMAGES:-1}
   POOLS=${_POOLS:-1}
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  cat<<_EOT_> $FILE_BATCH
+  if [ -v $FILE_BATCH ]; then
+    cat<<_EOT_ | sbatch > ./stdout
 #!/bin/sh
 #SBATCH -p $QUEUE
 #SBATCH -N $NODE
@@ -76,6 +77,23 @@ _EOT_
 
 srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
 _EOT_
+    JOBID=`cat ./stdout | awk '{print $4}'`
+    echo $JOBID
+    rm -f ./stdout
+    #echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+    echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+  else
+    cat<<_EOT_> $FILE_BATCH
+#!/bin/sh
+#SBATCH -p $QUEUE
+#SBATCH -N $NODE
+#SBATCH -n $MPIRANK
+#SBATCH -c $OMP
+#SBATCH -t $ELAPS
+
+srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
+_EOT_
+  fi
 }
 
 cygnus(){
@@ -138,8 +156,8 @@ while [[ $# -gt 0 ]]; do
         #//// ここにオプションを追加していきます ////
         -s|--super-computer) _SUPER_COMP="$2"; shift; shift;;
         -s=*|--super-computer=*) ARG="$1"; _SUPER_COMP="${ARG#*=}"; unset ARG; shift;;
-        -f|--file-batch) _FILE_BATCH="$2"; shift; shift;;
-        -f=*|--file-batch=*) ARG="$1"; _FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
+        -f|--file-batch) FILE_BATCH="$2"; shift; shift;;
+        -f=*|--file-batch=*) ARG="$1"; FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
         -p|--project-name) _PRJNAME="$2"; shift; shift;;
         -p=*|--project-name=*) ARG="$1"; PRJNAME="${ARG#*=}"; unset ARG; shift;;
         -q|--queue) _QUEUE="$2"; shift; shift;;
