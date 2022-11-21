@@ -147,7 +147,7 @@ mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MP
 _EOT_
     qsub ./run.sh > ./stdout
     rm -f ./run.sh
-    JOBID=`cat ./stdout | awk '{print $4}'`
+    JOBID=`cat ./stdout | awk -F'[. ]' '{print $2}'`
     echo $JOBID
     rm -f ./stdout
     #echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
