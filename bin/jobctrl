@@ -54,13 +54,13 @@ _EOT_
   fi
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
-  ELAPS=${_ELAPS:?" undefined"}
+  MPIRANK=${_MPIRANK:-128}
   OMP=${_OMP:-1}
+  ELAPS=${_ELAPS:?" undefined"}
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
   FILE_BATCH=${_FILE_BATCH:-"run.sh"}
-  PROC=$(($NODE*128/$OMP))
   IMAGES=${_IMAGES:-1}
   POOLS=${_POOLS:-1}
   BANDS=${_BANDS:-1}
@@ -69,9 +69,9 @@ _EOT_
   cat<<_EOT_> $FILE_BATCH
 #!/bin/sh
 #SBATCH -p $QUEUE
-#SBATCH -c $OMP
 #SBATCH -N $NODE
-#SBATCH -n $PROC
+#SBATCH -n $MPIRANK
+#SBATCH -c $OMP
 #SBATCH -t $ELAPS
 
 srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
@@ -99,8 +99,9 @@ _EOT_
   PRJNAME=${_PRJNAME:-"EIS0001"}
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
-  ELAPS=${_ELAPS:?" undefined"}
+  MPIRANK=${_MPIRANK:-24}
   OMP=${_OMP:-1}
+  ELAPS=${_ELAPS:?" undefined"}
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
@@ -120,7 +121,7 @@ _EOT_
 #PBS -v OMP_NUM_THREADS=$OMP
 #PBS -v BINDIR=$BINDIR
 module load intmpi/\${NQSV_MPI_VER}
-mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
 }
 
@@ -145,10 +146,12 @@ while [[ $# -gt 0 ]]; do
         -q=*|--queue=*) ARG="$1"; _QUEUE="${ARG#*=}"; unset ARG; shift;;
         -n|--node) _NODE="$2"; shift; shift;;
         -n=*|--node=*) ARG="$1"; _NODE="${ARG#*=}"; unset ARG; shift;;
-        -e|--elaps) _ELAPS="$2"; shift; shift;;
-        -e=*|--elaps=*) ARG="$1"; _ELAPS="${ARG#*=}"; unset ARG; shift;;
+        -m|--mpi-rank) _MPIRANK="$2"; shift; shift;;
+        -m=*|--mpi-rank=*) ARG="$1"; _MPIRANK="${ARG#*=}"; unset ARG; shift;;
         -o|--openmp) _OMP="$2"; shift; shift;;
         -o=*|--openmp=*) ARG="$1"; _OMP="${ARG#*=}"; unset ARG; shift;;
+        -e|--elaps) _ELAPS="$2"; shift; shift;;
+        -e=*|--elaps=*) ARG="$1"; _ELAPS="${ARG#*=}"; unset ARG; shift;;
         -b|--bindir) _BINDIR="$2"; shift; shift;;
         -b=*|--bindir=*) ARG="$1"; BINDIR="${ARG#*=}"; unset ARG; shift;;
         --inp-file) _INPFILE="$2"; shift; shift;;
