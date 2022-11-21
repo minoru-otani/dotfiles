@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 usage(){
+  # basename 最後のスラッシュまで削ってファイル名のみを出力
   cat<<EOUSAGE
-  Usage: $0 [OPTIONS]
-  -h,--help   Display help message
+  Usage: $(basename $0) [OPTIONS]
   -s,--super-computer
-              specify computer site. Currently available sites: ohtaka, cynus, fugaku
+              Specify computer site. Currently available sites: ohtaka, cynus, fugaku
   -b,--batch-file
-              file name of a batch script
+              File name of a batch script
   -p,--project-name
-              name of the project (budget)
-  -e,--elaps
-              elaps time
-  -q,--queue
-              queue name
-  -n,--node
-              number of nodes
-  -o,--omp
-              number of omp threads
-  -b,--bindir
-              plade of binary file
-  --inp-file
-              input file for calculation
-  --out-file
-              output file for calculation
+              Name of the project (budget)
+  -h,--help   Display help message
+  -e,--elaps  Elaps time
+  -q,--queue  Queue name
+  -n,--node   Number of nodes
+  -o,--omp    Number of omp threads
+  -b,--bindir Plade of binary file
+  --inp-file  Input file for calculation
+  --out-file  Output file for calculation
 EOUSAGE
 }
 
@@ -34,6 +28,29 @@ _EOT_
 }
 
 ohtaka(){
+  if [ "$INFO" = "YES" ]; then
+    cat<<_EOT_
+    1680 nodes * 2 CPUS * 64 cores
+    1) Batch queue
+      debug   --  30 mins  |     8 nodes
+      F1cpu   --  24 hours |     1 nodes
+      L1cpu   -- 120 hours |     1 nodes
+      F4cpu   --  24 hours |     4 nodes
+      L4cpu   -- 120 hours |     4 nodes
+      F16cpu  --  24 hours |    16 nodes
+      L16cpu  -- 120 hours |    16 nodes
+      F36cpu  --  24 hours |    36 nodes
+      L36cpu  -- 120 hours |    36 nodes
+      F72cpu  --  24 hours |    72 nodes
+      L72cpu  -- 120 hours |    72 nodes
+      F144cpu --  24 hours |   144 nodes
+      L144cpu -- 120 hours |   144 nodes
+    Commands:
+      ulimit -a, chquota, point,
+      sbatch, squeue, scancel, pstat, sacct
+_EOT_
+    exit
+  fi
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
   ELAPS=${_ELAPS:?" undefined"}
@@ -41,44 +58,36 @@ ohtaka(){
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
+  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
   PROC=$(($NODE*128/$OMP))
-  if [ "$INFO" = "YES" ]; then
-    cat<<_EOT_
-    1680 nodes * 2 CPUS * 64 cores
-    1) Batch queue
-      debug   --  30 min  |     8 nodes
-      F1cpu   --  24 hour |     1 nodes
-      L1cpu   -- 120 hour |     1 nodes
-      F4cpu   --  24 hour |     4 nodes
-      L4cpu   -- 120 hour |     4 nodes
-      F16cpu  --  24 hour |    16 nodes
-      L16cpu  -- 120 hour |    16 nodes
-      F36cpu  --  24 hour |    36 nodes
-      L36cpu  -- 120 hour |    36 nodes
-      F72cpu  --  24 hour |    72 nodes
-      L72cpu  -- 120 hour |    72 nodes
-      F144cpu --  24 hour |   144 nodes
-      L144cpu -- 120 hour |   144 nodes
-    Commands:
-      ulimit -a, chquota, point,
-      sbatch, squeue, scancel, pstat, sacct
-_EOT_
-  fi
   cat<<_EOT_> $FILE_BATCH
-  #!/bin/sh
-  #SBATCH -p $QUEUE
-  #SBATCH -c $OMP
-  #SBATCH -N $NODE
-  #SBATCH -n $PROC
-  #PBS -l elapstim_req=$ELAPS
-  #PBS -T NQSV_MPI_VER=19.0.5
-  #PBS -v BINDIR=$BINDIR
-  module load intmpi/\${NQSV_MPI_VER}
-  mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+#!/bin/sh
+#SBATCH -p $QUEUE
+#SBATCH -c $OMP
+#SBATCH -N $NODE
+#SBATCH -n $PROC
+#SBATCH -t $ELAPS
+
+srun ${BINDIR}/pw.x < $INPFILE > $OUTFILE
 _EOT_
 }
 
 cygnus(){
+  if [ "$INFO" = "YES" ]; then
+    cat<<_EOT_
+    46 nodes * 2 CPUs * 12 cores
+    1) Interactive queue
+      debug   --  1 hours |      2 nodes
+    2) Batch queue
+      gpu     -- 24 hours |     78 nodes
+      gen_S   -- 24 hours |   1~16 nodes
+      gen_M   -- 24 hours |  17~32 nodes
+      gen_L   -- 24 hours |  33~78 nodes
+    Commands:
+      qsub, qstat, qdel, sstat
+_EOT_
+    exit
+  fi
   # ${変数:-デフォルト値}
   # ${変数:?"メッセージ"} ← メッセージを出力して終了
   PRJNAME=${_PRJNAME:-"EIS0001"}
@@ -89,31 +98,18 @@ cygnus(){
   BINDIR=${_BINDIR:?" undefined"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
-  if [ "$INFO" = "YES" ]; then
-    cat<<_EOT_
-    46 nodes * 2 CPUs * 12 cores
-    1) Interactive queue
-      debug   --  1 hour |      2 nodes
-    2) Batch queue
-      gpu     -- 24 hour |     78 nodes
-      gen_S   -- 24 hour |   1~16 nodes
-      gen_M   -- 24 hour |  17~32 nodes
-      gen_L   -- 24 hour |  33~78 nodes
-    Commands:
-      qsub, qstat, qdel, sstat
-_EOT_
-  fi
+  FILE_BATCH=${_FILE_BATCH:-"run.sh"}
   cat<<_EOT_> $FILE_BATCH
-  #!/bin/bash
-  #PBS -A $PRJNAME
-  #PBS -q $QUEUE
-  #PBS -b $NODE
-  #PBS -l elapstim_req=$ELAPS
-  #PBS -T NQSV_MPI_VER=19.0.5
-  #PBS -v OMP_NUM_THREADS=$OMP
-  #PBS -v BINDIR=$BINDIR
-  module load intmpi/\${NQSV_MPI_VER}
-  mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+#!/bin/bash
+#PBS -A $PRJNAME
+#PBS -q $QUEUE
+#PBS -b $NODE
+#PBS -l elapstim_req=$ELAPS
+#PBS -T NQSV_MPI_VER=19.0.5
+#PBS -v OMP_NUM_THREADS=$OMP
+#PBS -v BINDIR=$BINDIR
+module load intmpi/\${NQSV_MPI_VER}
+mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
 }
 
@@ -130,8 +126,8 @@ while [[ $# -gt 0 ]]; do
         #//// ここにオプションを追加していきます ////
         -s|--super-computer) _SUPER_COMP="$2"; shift; shift;;
         -s=*|--super-computer=*) ARG="$1"; _SUPER_COMP="${ARG#*=}"; unset ARG; shift;;
-        -f|--file-batch) FILE_BATCH="$2"; shift; shift;;
-        -f=*|--file-batch=*) ARG="$1"; FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
+        -f|--file-batch) _FILE_BATCH="$2"; shift; shift;;
+        -f=*|--file-batch=*) ARG="$1"; _FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
         -p|--project-name) _PRJNAME="$2"; shift; shift;;
         -p=*|--project-name=*) ARG="$1"; PRJNAME="${ARG#*=}"; unset ARG; shift;;
         -q|--queue) _QUEUE="$2"; shift; shift;;
@@ -149,7 +145,7 @@ while [[ $# -gt 0 ]]; do
         --out-file) _OUTFILE="$2"; shift; shift;;
         --out-file=*) ARG="$1"; _OUTFILE="${ARG#*=}"; unset ARG; shift;;
         --info) INFO="YES"; shift;;  #// Without value
-        --help) usage; shift;;  #// Without value
+        --help) usage; exit;;  #// Without value
         # += 配列、変数に値を追加する
         --) shift; POSITIONAL_ARGS+=("$@"); set --;;
         --*) echo "[ERROR] Unknown option $1"; exit 1;;
@@ -178,8 +174,8 @@ case "${SUPER_COMP:0:6}" in
   ohtaka) ohtaka;;
   cygnus) cygnus;;
   fn01sv) fugaku;; # hostname of Fugaku
-  pisces) pisces;;
-  *) echo "Computer site must be defined"
+#  *) echo "Computer site must be defined"
+  *) echo "Test environemtn on Mac"
     usage;;
 esac
 
