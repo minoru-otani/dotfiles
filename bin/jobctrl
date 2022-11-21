@@ -5,8 +5,6 @@ usage(){
   Usage: $(basename $0) [OPTIONS]
   -s,--super-computer
               Specify computer site. Currently available sites: ohtaka, cynus, fugaku
-  -b,--batch-file
-              File name of a batch script
   -p,--project-name
               Name of the project (budget)
   -h,--help   Display help message
@@ -17,6 +15,8 @@ usage(){
               Number of MPI rank
   -o,--omp    Number of omp threads
   -b,--bindir Plade of binary file
+  --batch-file
+              File name of a batch script
   --inp-file  Input file for calculation
   --out-file  Output file for calculation
   --images    Number of images
@@ -65,6 +65,7 @@ _EOT_
   OMP=${_OMP:-1}
   ELAPS=${_ELAPS:?" undefined"}
   BINDIR=${_BINDIR:?" undefined"}
+  BATFILE=${_BATFILE:-"run.sh"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
   IMAGES=${_IMAGES:-1}
@@ -72,7 +73,7 @@ _EOT_
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  if [ -z $FILE_BATCH ]; then
+  if [ "$RUN_SCRIPT" = "YES" ]; then
     cat<<_EOT_ | sbatch > ./stdout
 #!/bin/sh
 #SBATCH -p $QUEUE
@@ -88,7 +89,7 @@ _EOT_
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo "a job is submit to $QUEUE. JobID: $JOBID"
   else
-    cat<<_EOT_> $FILE_BATCH
+    cat<<_EOT_> $BATFILE
 #!/bin/sh
 #SBATCH -p $QUEUE
 #SBATCH -N $NODE
@@ -126,6 +127,7 @@ _EOT_
   OMP=${_OMP:-1}
   ELAPS=${_ELAPS:?" undefined"} # format hh:mm:ss
   BINDIR=${_BINDIR:?" undefined"}
+  BATFILE=${_BATFILE:-"run.sh"}
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
   if [ $(($OMP*$MPIRANK)) -gt 24 ]; then
@@ -137,7 +139,7 @@ _EOT_
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  if [ -z $FILE_BATCH ]; then
+  if [ "$RUN_SCRIPT" = "YES" ]; then
     cat<<_EOT_ > ./run.sh
 #!/bin/bash
 #PBS -A $PRJNAME
@@ -158,7 +160,7 @@ _EOT_
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo "a job is submit to $QUEUE. JobID: $JOBID"
   else
-    cat<<_EOT_> $FILE_BATCH
+    cat<<_EOT_> $BATFILE
 #!/bin/bash
 #PBS -A $PRJNAME
 #PBS -q $QUEUE
@@ -184,11 +186,13 @@ POSITIONAL_ARGS=()
 # 最後からその長さ分戻った所までを切り出す。
 while [[ $# -gt 0 ]]; do
     case $1 in
-        #//// ここにオプションを追加していきます ////
+        # Flag options without value
+        -r|--run-script) RUN_SCRIPT="YES"; shift;;
+        -i|--info) INFO="YES"; shift;;
+        -h|--help) usage; exit;;
+        # Options with value
         -s|--super-computer) _SUPER_COMP="$2"; shift; shift;;
         -s=*|--super-computer=*) ARG="$1"; _SUPER_COMP="${ARG#*=}"; unset ARG; shift;;
-        -f|--file-batch) FILE_BATCH="$2"; shift; shift;;
-        -f=*|--file-batch=*) ARG="$1"; FILE_BATCH="${ARG#*=}"; unset ARG; shift;;
         -p|--project-name) _PRJNAME="$2"; shift; shift;;
         -p=*|--project-name=*) ARG="$1"; PRJNAME="${ARG#*=}"; unset ARG; shift;;
         -q|--queue) _QUEUE="$2"; shift; shift;;
@@ -203,6 +207,8 @@ while [[ $# -gt 0 ]]; do
         -e=*|--elaps=*) ARG="$1"; _ELAPS="${ARG#*=}"; unset ARG; shift;;
         -b|--bindir) _BINDIR="$2"; shift; shift;;
         -b=*|--bindir=*) ARG="$1"; BINDIR="${ARG#*=}"; unset ARG; shift;;
+        --batch-file) _BATFILE="$2"; shift; shift;;
+        --batch-file=*) ARG="$1"; _BATFILE="${ARG#*=}"; unset ARG; shift;;
         --inp-file) _INPFILE="$2"; shift; shift;;
         --inp-file=*) ARG="$1"; _INPFILE="${ARG#*=}"; unset ARG; shift;;
         --out-file) _OUTFILE="$2"; shift; shift;;
@@ -217,8 +223,6 @@ while [[ $# -gt 0 ]]; do
         --tasks=*) ARG="$1"; _TASKS="${ARG#*=}"; unset ARG; shift;;
         --diag) _DIAG="$2"; shift; shift;;
         --diag=*) ARG="$1"; _DIAG="${ARG#*=}"; unset ARG; shift;;
-        --info) INFO="YES"; shift;;  #// Without value
-        --help) usage; exit;;  #// Without value
         # += 配列、変数に値を追加する
         --) shift; POSITIONAL_ARGS+=("$@"); set --;;
         --*) echo "[ERROR] Unknown option $1"; exit 1;;
@@ -226,9 +230,9 @@ while [[ $# -gt 0 ]]; do
             OPTIONS=$1
             for (( i=1; i<${#OPTIONS}; i++ )); do
                 case "-${OPTIONS:$i:1}" in
-                    #//// ここにフラグの ショート オプション を追加していきます ////
-                    -f)  FLAG="YES";;
-                    -h)  HELP="YES";;
+                    -r) RUN_SCRIPT="YES";;
+                    -i) INFO="YES";;
+                    -h) usege; exit;;
                     *) echo "[ERROR] Unknown option -${OPTIONS:$i:1}"; exit 1;;
                 esac
             done
