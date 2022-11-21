@@ -132,7 +132,7 @@ _EOT_
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
   if [ -z $FILE_BATCH ]; then
-  cat<<_EOT_ | qsub > ./stdout
+    cat<<_EOT_ | qsub > ./stdout
 #!/bin/bash
 #PBS -A $PRJNAME
 #PBS -q $QUEUE
