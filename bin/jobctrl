@@ -132,18 +132,21 @@ _EOT_
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
   if [ -z $FILE_BATCH ]; then
-    cat<<_EOT_ | qsub > ./stdout
+    cat<<_EOT_ > ./run.sh
 #!/bin/bash
 #PBS -A $PRJNAME
 #PBS -q $QUEUE
 #PBS -b $NODE
 #PBS -l elapstim_req=$ELAPS
-#PBS -T NQSV_MPI_VER=19.0.5
+#PBS -T intmpi
+#PBS -v NQSV_MPI_VER=19.0.5
 #PBS -v OMP_NUM_THREADS=$OMP
 #PBS -v BINDIR=$BINDIR
 module load intmpi/\${NQSV_MPI_VER}
 mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
+    qsub ./run.sh > ./stdout
+    rm -f ./run.sh
     JOBID=`cat ./stdout | awk '{print $4}'`
     echo $JOBID
     rm -f ./stdout
@@ -156,7 +159,8 @@ _EOT_
 #PBS -q $QUEUE
 #PBS -b $NODE
 #PBS -l elapstim_req=$ELAPS
-#PBS -T NQSV_MPI_VER=19.0.5
+#PBS -T intmpi
+#PBS -v NQSV_MPI_VER=19.0.5
 #PBS -v OMP_NUM_THREADS=$OMP
 #PBS -v BINDIR=$BINDIR
 module load intmpi/\${NQSV_MPI_VER}
