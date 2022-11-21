@@ -77,10 +77,9 @@ _EOT_
 srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
 _EOT_
     JOBID=`cat ./stdout | awk '{print $4}'`
-    echo $JOBID
     rm -f ./stdout
-    #echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+    echo "a job is submit to $QUEUE. JobID: $JOBID"
   else
     cat<<_EOT_> $FILE_BATCH
 #!/bin/sh
@@ -148,10 +147,9 @@ _EOT_
     qsub ./run.sh > ./stdout
     rm -f ./run.sh
     JOBID=`cat ./stdout | awk -F'[. ]' '{print $2}'`
-    echo $JOBID
     rm -f ./stdout
-    #echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
+    echo "a job is submit to $QUEUE. JobID: $JOBID"
   else
     cat<<_EOT_> $FILE_BATCH
 #!/bin/bash
