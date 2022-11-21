@@ -31,8 +31,9 @@ ohtaka(){
   if [ "$INFO" = "YES" ]; then
     cat<<_EOT_
     1680 nodes * 2 CPUS * 64 cores
-    1) Batch queue
-      debug   --  30 mins  |     8 nodes
+    1) Debug queue
+      i8cpu   --  30 mins  |     8 nodes
+    2) Batch queue
       F1cpu   --  24 hours |     1 nodes
       L1cpu   -- 120 hours |     1 nodes
       F4cpu   --  24 hours |     4 nodes
@@ -60,6 +61,11 @@ _EOT_
   OUTFILE=${_OUTFILE:?" undefined"}
   FILE_BATCH=${_FILE_BATCH:-"run.sh"}
   PROC=$(($NODE*128/$OMP))
+  IMAGES=${_IMAGES:-1}
+  POOLS=${_POOLS:-1}
+  BANDS=${_BANDS:-1}
+  TASKS=${_TASKS:-1}
+  DIAG=${_DIAG:-1}
   cat<<_EOT_> $FILE_BATCH
 #!/bin/sh
 #SBATCH -p $QUEUE
@@ -68,7 +74,7 @@ _EOT_
 #SBATCH -n $PROC
 #SBATCH -t $ELAPS
 
-srun ${BINDIR}/pw.x < $INPFILE > $OUTFILE
+srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
 _EOT_
 }
 
@@ -99,6 +105,11 @@ _EOT_
   INPFILE=${_INPFILE:?" undefined"}
   OUTFILE=${_OUTFILE:?" undefined"}
   FILE_BATCH=${_FILE_BATCH:-"run.sh"}
+  IMAGES=${_IMAGES:-1}
+  POOLS=${_POOLS:-1}
+  BANDS=${_BANDS:-1}
+  TASKS=${_TASKS:-1}
+  DIAG=${_DIAG:-1}
   cat<<_EOT_> $FILE_BATCH
 #!/bin/bash
 #PBS -A $PRJNAME
@@ -109,7 +120,7 @@ _EOT_
 #PBS -v OMP_NUM_THREADS=$OMP
 #PBS -v BINDIR=$BINDIR
 module load intmpi/\${NQSV_MPI_VER}
-mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
+mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*24)) --perhost $(($NODE*24)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
 }
 
@@ -144,6 +155,16 @@ while [[ $# -gt 0 ]]; do
         --inp-file=*) ARG="$1"; _INPFILE="${ARG#*=}"; unset ARG; shift;;
         --out-file) _OUTFILE="$2"; shift; shift;;
         --out-file=*) ARG="$1"; _OUTFILE="${ARG#*=}"; unset ARG; shift;;
+        --images) _IMAGES="$2"; shift; shift;;
+        --images=*) ARG="$1"; _IMAGES="${ARG#*=}"; unset ARG; shift;;
+        --pools) _POOLS="$2"; shift; shift;;
+        --pools=*) ARG="$1"; _POOLS="${ARG#*=}"; unset ARG; shift;;
+        --bands) _BANDS="$2"; shift; shift;;
+        --bands=*) ARG="$1"; _BANDS="${ARG#*=}"; unset ARG; shift;;
+        --tasks) _TASKS="$2"; shift; shift;;
+        --tasks=*) ARG="$1"; _TASKS="${ARG#*=}"; unset ARG; shift;;
+        --diag) _DIAG="$2"; shift; shift;;
+        --diag=*) ARG="$1"; _DIAG="${ARG#*=}"; unset ARG; shift;;
         --info) INFO="YES"; shift;;  #// Without value
         --help) usage; exit;;  #// Without value
         # += 配列、変数に値を追加する
