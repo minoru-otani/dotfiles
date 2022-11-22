@@ -86,7 +86,7 @@ srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $IN
 _EOT_
 #
   if [ "$RUN_SCRIPT" = "YES" ]; then
-    sbatch > ./stdout
+    sbatch $BATFILE > ./stdout
     JOBID=`cat ./stdout | awk '{print $4}'`
     rm -f ./stdout
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
