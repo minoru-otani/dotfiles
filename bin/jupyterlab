@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# This code was originally from
+# https://gist.github.com/pogin503/ad1f14c09f3bf12b8096a644db237fd1
+usage(){
+  cat<<_EOUSAGE_
+  Usage: $(basename $0) [OPTINOS]
+  -o,--open-path  Open directory path
+  -p,--port       Port number
+_EOUSAGE_
+}
+
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -o|--open-path) _SEARCH_PATH="$2"; shift; shift;;
+    -o=*|--open-path=*) ARG="$1"; _SEARCH_PATH="${ARG#*=}"; unset ARG; shift;;
+    -p|--port) _PORT="$2"; shift; shift;;
+    -p=*|--port=*) ARG="$1"; _PORT="${ARG#*=}"; unset ARG; shift;;
+    -h|--help) usage; exit 1;;
+    --) shift; POSITIONAL_ARGS+=("$@"); set --;;
+    --*) echo "[ERROR] Unknown option $1"; exit 1;;
+    -*) #// Multiple short name options. e.g.-fh
+      OPTIONS=$1
+      for (( i=1; i<${#OPTIONS}; i++ )); do
+        case "-${OPTIONS:$i:1}" in
+          -p) RUN_SCRIPT="YES";;
+          -h) usege; exit 1;;
+          *) echo "[ERROR] Unknown option -${OPTIONS:$i:1}"; exit 1;;
+        esac
+      done
+      unset OPTIONS; shift;;
+    *) POSITIONAL_ARGS+=("$1"); shift;;
+  esac
+done
+
+PORT="${_PORT:-8888}"
+SEARCH_PATH="${_SEARCH_PATH:-"./"}"
+
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
+export JUPYTER_DATA_DIR="$XDG_DATA_HOME"/jupyter
+
+source $HOME/.venv/bin/activate
+
+jupyter lab --port "$PORT" --notebook-dir "$SEARCH_PATH"
+
+deactivate
