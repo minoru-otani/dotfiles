@@ -153,7 +153,6 @@ _EOT_
     rm -f ./stdout
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo "a job is submit to $QUEUE. JobID: $JOBID"
-  else
   fi
 }
 # 配列の宣言
