@@ -87,6 +87,7 @@ _EOT_
 #
   if [ "$RUN_SCRIPT" = "YES" ]; then
     sbatch $BATFILE > ./stdout
+    rm -f $BATFILE
     JOBID=`cat ./stdout | awk '{print $4}'`
     rm -f ./stdout
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
