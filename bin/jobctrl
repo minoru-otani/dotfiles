@@ -73,8 +73,8 @@ _EOT_
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  if [ "$RUN_SCRIPT" = "YES" ]; then
-    cat<<_EOT_ | sbatch > ./stdout
+#
+  cat<<_EOT_> $BATFILE
 #!/bin/sh
 #SBATCH -p $QUEUE
 #SBATCH -N $NODE
@@ -84,21 +84,13 @@ _EOT_
 
 srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
 _EOT_
+#
+  if [ "$RUN_SCRIPT" = "YES" ]; then
+    sbatch > ./stdout
     JOBID=`cat ./stdout | awk '{print $4}'`
     rm -f ./stdout
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo "a job is submit to $QUEUE. JobID: $JOBID"
-  else
-    cat<<_EOT_> $BATFILE
-#!/bin/sh
-#SBATCH -p $QUEUE
-#SBATCH -N $NODE
-#SBATCH -n $MPIRANK
-#SBATCH -c $OMP
-#SBATCH -t $ELAPS
-
-srun ${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < $INPFILE > $OUTFILE
-_EOT_
   fi
 }
 
@@ -139,8 +131,8 @@ _EOT_
   BANDS=${_BANDS:-1}
   TASKS=${_TASKS:-1}
   DIAG=${_DIAG:-1}
-  if [ "$RUN_SCRIPT" = "YES" ]; then
-    cat<<_EOT_ > ./run.sh
+#
+  cat<<_EOT_> $BATFILE
 #!/bin/bash
 #PBS -A $PRJNAME
 #PBS -q $QUEUE
@@ -153,29 +145,17 @@ _EOT_
 module load intmpi/\${NQSV_MPI_VER}
 mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
 _EOT_
-    qsub ./run.sh > ./stdout
-    rm -f ./run.sh
+#
+  if [ "$RUN_SCRIPT" = "YES" ]; then
+    qsub $BATFILE > ./stdout
+    rm -f $BATFILE
     JOBID=`cat ./stdout | awk -F'[. ]' '{print $2}'`
     rm -f ./stdout
     echo $JOBID, `date "+%Y%m%d_%H%M%S"`, $QUEUE, $INPFILE, $OUTFILE, $NODE, $OMP >> $HOME/.JOBLIST
     echo "a job is submit to $QUEUE. JobID: $JOBID"
   else
-    cat<<_EOT_> $BATFILE
-#!/bin/bash
-#PBS -A $PRJNAME
-#PBS -q $QUEUE
-#PBS -b $NODE
-#PBS -l elapstim_req=$ELAPS
-#PBS -T intmpi
-#PBS -v NQSV_MPI_VER=19.0.5
-#PBS -v OMP_NUM_THREADS=$OMP
-#PBS -v BINDIR=$BINDIR
-module load intmpi/\${NQSV_MPI_VER}
-mpirun -hostfile \${PBS_NODEFILE} -np $(($NODE*$MPIRANK)) --perhost $(($NODE*$MPIRANK)) \${BINDIR}/pw.x -ni $IMAGES -nk $POOLS -nb $BANDS -nt $TASKS -nd $DIAG < \${PBS_O_WORKDIR}/$INPFILE > \${PBS_O_WORKDIR}/$OUTFILE
-_EOT_
   fi
 }
-
 # 配列の宣言
 POSITIONAL_ARGS=()
 # $0 スクリプト名
