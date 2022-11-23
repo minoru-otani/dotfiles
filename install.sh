@@ -146,7 +146,8 @@ setup_homebrew() {
     if [ "$(uname)" == "Linux" ]; then
         test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
         test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+        #bashは汚染したくないので、何も加えない。
+        #test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
     fi
 
     # install brew dependencies from Brewfile
@@ -162,14 +163,26 @@ setup_shell() {
     title "Configuring shell"
 
     [[ -n "$(command -v brew)" ]] && zsh_path="$(brew --prefix)/bin/zsh" || zsh_path="$(which zsh)"
-    if ! grep "$zsh_path" /etc/shells; then
-        info "adding $zsh_path to /etc/shells"
-        echo "$zsh_path" | sudo tee -a /etc/shells
-    fi
+    if [[ "$(uname)" == "Darwin" ]]; then
+      if ! grep "$zsh_path" /etc/shells; then
+          info "adding $zsh_path to /etc/shells"
+          echo "$zsh_path" | sudo tee -a /etc/shells
+      fi
 
-    if [[ "$SHELL" != "$zsh_path" ]]; then
-        chsh -s "$zsh_path"
-        info "default shell changed to $zsh_path"
+      if [[ "$SHELL" != "$zsh_path" ]]; then
+          chsh -s "$zsh_path"
+          info "default shell changed to $zsh_path"
+      fi
+    else
+      if [[ "$SHELL" != "$zsh_path" ]]; then
+          info "default shell changed to $zsh_path"
+          cat <<_EOT_>> $HOME/.bash_profile 
+if [ -x "$zsh_path" ]; then
+  export SHELL=$zsh_path
+  exec $SHELL -l
+fi
+_EOT_
+      fi
     fi
 }
 
