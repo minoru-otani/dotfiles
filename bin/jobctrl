@@ -111,8 +111,11 @@ cygnus(){
 _EOT_
     exit
   fi
-  # ${変数:-デフォルト値}
-  # ${変数:?"メッセージ"} ← メッセージを出力して終了
+  # ${parameter:-default} parameterに値が入っていなければ、defaultを返す。
+  #                       この時にparameterは空のまま残る
+  # ${parameter:=default} parameterに値が入っていなければ、defaultを返す。
+  #                       この時にparameterにdefaultが代入される
+  # ${parameter:?"message"} ← messageを出力して終了
   PRJNAME=${_PRJNAME:-"EIS00001"}
   QUEUE=${_QUEUE:?" undefined"}
   NODE=${_NODE:?" undefined"}
