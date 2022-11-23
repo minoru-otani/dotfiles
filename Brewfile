@@ -57,6 +57,7 @@ if OS.mac?
   mas 'GoodNotes 5', id: 1444383602
   mas 'LadioCast', id: 411213048
 elsif OS.linux?
+  brew 'gcc'
   brew 'xclip' # access to clipboard (similar to pbcopy/pbpaste)
 end
 
