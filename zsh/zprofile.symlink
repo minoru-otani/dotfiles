@@ -11,4 +11,5 @@ elif [[ -d $HOME/.linuxbrew ]]; then
     # or from linuxbrew
     test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
     test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    ARG=`gem environment|grep 'EXECUTABLE DIRECTORY'`; export PATH=${ARG#*DIRECTORY: }:$PATH ; unset ARG
 fi
