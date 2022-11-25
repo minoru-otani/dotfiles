@@ -75,3 +75,4 @@ export MANPATH=/usr/local/share/man:$MANPATH
 alias sshcygnus="TERM=xterm-256color-italic LC_CTYPE=ja_JP.UTF-8 ssh cygnus"
 alias sshnagofx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya1"
 alias sshnagocx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya2"
+ssh-add -A &>/dev/null
