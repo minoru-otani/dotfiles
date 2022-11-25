@@ -4,8 +4,8 @@
 usage(){
   cat<<_EOUSAGE_
   Usage: $(basename $0) [OPTINOS]
-  -o,--open-path  Open directory path
-  -p,--port       Port number
+  -o,--open-path  Open directory path [default: ./]
+  -p,--port       Port number [default: 8888]
 _EOUSAGE_
 }
 
