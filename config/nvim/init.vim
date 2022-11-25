@@ -2,7 +2,8 @@ set autoindent         "改行時に自動でインデントする
 set autoread           "外部でファイルに変更があった場合に自動的に読み込む
 set backspace=indent,eol,start "近代的なバックスペースの振る舞い
 set belloff=all        "ビープ音を消す
-set clipboard=unnamed  "yank した文字列をクリップボードにコピー
+" https://pocke.hatenablog.com/entry/2014/10/26/145646
+set clipboard^=unnamedplus  "yank した文字列をクリップボードにコピー
 set expandtab          "タブ入力を空白に変換
 set hls                "検索した文字をハイライトする
 set nocompatible       "viとの互換性なし
