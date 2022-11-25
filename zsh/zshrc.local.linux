@@ -18,3 +18,7 @@ elif [ -S $agent ]; then
 else
     echo "no ssh-agent"
 fi
+
+# setup locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8

@@ -72,7 +72,8 @@ export MANPATH=/usr/local/share/man:$MANPATH
 # https://qiita.com/constdrop/items/524d9f11fc75d29ca1c1
 # https://rksz.hateblo.jp/entry/2013/01/13/155813
 # (このページの安直な方法でとりあえずたいしょ）
-alias sshcygnus="TERM=xterm-256color-italic LC_CTYPE=ja_JP.UTF-8 ssh cygnus"
+alias sshohtaka="TERM=xterm-256color-italic ssh -XC ohtaka"
+alias sshcygnus="TERM=xterm-256color-italic ssh -XC cygnus"
 alias sshnagofx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya1"
 alias sshnagocx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya2"
 ssh-add -A &>/dev/null
