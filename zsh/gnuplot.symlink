@@ -1,3 +1,5 @@
+# https://dosei.hatenadiary.jp/entry/20090324/p1
+# https://runebook.dev/ja/docs/gnuplot/if
 if ("`uname`" eq "Darwin") {
   set terminal qt font "Helvetica"
   } else {
