@@ -194,7 +194,7 @@ setup_shell() {
     else
       if [[ "$SHELL" != "$zsh_path" ]]; then
           info "default shell changed to $zsh_path"
-          cat <<_EOT_>> $HOME/.bash_profile 
+          cat <<_EOT_>> $HOME/.bash_profile
 if [ -x "$zsh_path" ]; then
   export SHELL=$zsh_path
   exec $SHELL -l
