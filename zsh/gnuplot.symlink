@@ -1,10 +1,6 @@
-aaa = system('uname')
-print aaa
-if (aaa eq "Darwin") {
-  print "darwin"
+if ("`uname`" eq "Darwin") {
   set terminal qt font "Helvetica"
   } else {
-  print "linux"
   set terminal x11 font "Helvetica"
 }
 h_plank_si = 6.62606896e-34    # J s
