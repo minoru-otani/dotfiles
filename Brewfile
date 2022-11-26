@@ -1,3 +1,6 @@
+tap 'homebrew/bundle'
+tap 'homebrew/core'
+
 if OS.mac?
   #tap 'agiliopadua/extras'
   tap 'homebrew/cask'
@@ -60,9 +63,6 @@ elsif OS.linux?
   brew 'gcc'
   brew 'xclip' # access to clipboard (similar to pbcopy/pbpaste)
 end
-
-tap 'homebrew/bundle'
-tap 'homebrew/core'
 
 #packages
 brew 'a2ps'
