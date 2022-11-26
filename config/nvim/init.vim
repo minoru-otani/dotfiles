@@ -146,11 +146,6 @@ let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linen
 " gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
 let g:airline#extensions#hunks#enabled = 0
 
-"========================
-"Python 3.x系のPathを設定
-"========================
-let g:python3_host_prog = '/usr/local/bin/python3'
-
 "=========================
 "Cocのショートカットを設定
 "=========================
