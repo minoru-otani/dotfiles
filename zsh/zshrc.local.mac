@@ -13,51 +13,12 @@ alias syncweb="rsync -rlptgoD --progress --exclude common/js/news.js --exclude '
 # Force to do not write a cache file
 export PYTHONDONTWRITEBYTECODE=1
 
-#account for Juten-Kadai
-#alias ssh2kei1='ssh k00739@k.aics.riken.jp'
-#account for Ippan-Kadai
-#alias ssh2kei1='ssh k00789@k.aics.riken.jp'
-#password for user manual = 'kei'
-#password for user2031 = 'jN0lf*es'
-#programs
-#commands
-#alias kterm='/sw/bin/kterm -sb -km euc -fn 7x14 -geometry 120x30+0+0'
-#alias xterm='/usr/X11R6/bin/xterm -sb -fn 7x14 -geometry 120x30+0+0'
-#environment for MPI
-#LD_LIBRARY_PATH=/opt/local/lib; export LD_LIBRARY_PATH
-#LD_LIBRARY_PATH=/usr/local/lib; export LD_LIBRARY_PATH
-#environment for FORTRAN MKL ICC
-#source /opt/intel/Compiler/11.1/Current/bin/ifortvars.sh intel64
-#source /opt/intel/Compiler/11.1/Current/bin/iccvars.sh intel64
-#source /opt/intel/Compiler/11.1/Current/bin/ifortvars.sh ia32
-#source /opt/intel/Compiler/11.1/Current/bin/iccvars.sh ia32
-#prevent resource fork
-#force using x11 to GNUPLOT
-#export GNUTERM=x11
-
 # Constants
 export rytoev=13.6056925330
 export bohr=0.52917720859
 
-# for openmpi
-#export MPI_INC_DIR="/usr/local/include"
-#export MPI_LIB_DIR="/usr/local/lib"
-#export MPI_LIB_SHARED=""
-#export MPI_LIB_STATIC=""
-#export OMPI_CC=gcc
-#export OMPI_CXX=g++
-#export OMPI_F77=gfortran
-#export OMPI_F90=gfortran
-#export OMPI_FC=gfortran
-export ARCHFLAGS="-arch x86_64"
 export MANPATH=/usr/local/share/man:$MANPATH
-#export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-#export LDFLAGS="-L/opt/homebrew/opt/openblas/lib -L/opt/homebrew/opt/fftw/lib"
-#export CPPFLAGS="-I/opt/homebrew/opt/openblas/include -I/opt/homebrew/opt/fftw/include"
-#export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
-#export PATH="/usr/local/opt/sphinx-doc/bin:$PATH"
-#export PATH="/usr/local/opt/tcl-tk/bin:$PATH"
-#export PATH="$HOME/.nodebrew/current/bin:$PATH"
+
 # Gaussian16 environment
 #export g16root=/Applications
 #export GAUSS_SCRDIR=~/.G16TEMP
@@ -66,7 +27,6 @@ export MANPATH=/usr/local/share/man:$MANPATH
 # https://flying-foozy.hatenablog.com/entry/20140203/1391434470
 # https://qiita.com/kondounagi/items/c0c76f4b89494c5bcd02
 #export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
-#export LC_CTYPE="UTF-8"
 # cygnusでvimが壊れている問題
 # https://senooken.jp/post/2020/09/17/
 # https://qiita.com/constdrop/items/524d9f11fc75d29ca1c1
