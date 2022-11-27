@@ -106,6 +106,7 @@ setup_symlinks() {
         fi
     done
 
+    info "Creating OS dependent zshrc.local"
     if [[ "$(uname)" == "Darwin" ]]; then
       target="${HOME}/.zshrc.local"
       if [[ -e "$target" ]]; then
