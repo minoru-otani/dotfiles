@@ -74,8 +74,8 @@ export MANPATH=/usr/local/share/man:$MANPATH
 # (このページの安直な方法でとりあえずたいしょ）
 alias sshohtaka="TERM=xterm-256color-italic ssh -XC ohtaka"
 alias sshcygnus="TERM=xterm-256color-italic ssh -XC cygnus"
-alias sshnagofx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya1"
-alias sshnagocx="TERM=xterm-256color-italic LC_CTYPE=en_US.UTF-8 ssh nagoya2"
+alias sshnagofx="TERM=xterm-256color-italic ssh -XC nagoya1"
+alias sshnagocx="TERM=xterm-256color-italic ssh -XC nagoya2"
 #ssh-add -A &>/dev/null
 #eval `ssh-agent -s`
 if [[ -d $HOME/.ssh ]]; then
