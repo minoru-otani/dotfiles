@@ -1,0 +1,24 @@
+set autoindent         "改行時に自動でインデントする
+set autoread           "外部でファイルに変更があった場合に自動的に読み込む
+set backspace=indent,eol,start "近代的なバックスペースの振る舞い
+set belloff=all        "ビープ音を消す
+" https://pocke.hatenablog.com/entry/2014/10/26/145646
+set clipboard^=unnamedplus  "yank した文字列をクリップボードにコピー
+set expandtab          "タブ入力を空白に変換
+set hls                "検索した文字をハイライトする
+set mouse=a            "マウスを使えるようにする
+set nocompatible       "viとの互換性なし
+set relativenumber number             "行番号を表示
+set shiftwidth=2       "自動インデント時に入力する空白の数
+set showmatch          "対応するカッコやブレースを表示する
+set tabstop=2          "タブを何文字の空白に変換するか
+set termguicolors      "TrueColor対応"
+set updatetime=300     "gitgutterのアップデートタイムを短くする（デフォルト4000ms）
+set wildmode=longest,list "タブで補完されるファイルをshellライクに
+
+"===========================================
+"Leader キーをデフォルトの"\"からspaceに変更
+"Local leaderキーを割り当てる
+"===========================================
+let mapleader = "\<Space>"
+let maplocalleader = ","
