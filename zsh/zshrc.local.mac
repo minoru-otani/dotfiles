@@ -40,6 +40,6 @@ alias sshnagocx="TERM=xterm-256color-italic ssh -XC nagoya2"
 #eval `ssh-agent -s`
 if [[ -d $HOME/.ssh ]]; then
   for SECRET_FILE in $(ls $HOME/.ssh/*.sec) ; do
-   ssh-add --apple-use-keychain $SECRET_FILE &>/dev/null
+    ssh-add --apple-use-keychain $SECRET_FILE &>/dev/null
   done
 fi
