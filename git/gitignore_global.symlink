@@ -36,3 +36,8 @@ LIBBEEF/
 MBD/
 KCW
 QEHeat/
+
+# autoenv.zsh
+venv/*
+.autoenv.zsh
+.autoenv_leave.zsh
