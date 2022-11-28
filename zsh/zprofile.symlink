@@ -10,7 +10,9 @@ elif [[ -f /usr/local/bin/brew ]]; then
 elif [[ -d $HOME/.linuxbrew ]]; then
     # or from linuxbrew
     test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
-    test -d ~/.rbenv && eval "$(rbenv init -)"
     test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# version control for ruby
+test -d $HOME/.rbenv && eval "$(rbenv init -)"
