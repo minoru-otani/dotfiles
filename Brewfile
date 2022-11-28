@@ -80,6 +80,7 @@ brew 'git-delta' # a better git diff
 brew 'grep' # grep (latest)
 brew 'neovim' # a better vim
 brew 'python' # python (latest)
+brew 'rbenv' # ruby version control
 brew 'ripgrep' # very fast file searcher
 brew 'tmux' # terminal multiplexer
 brew 'tree' # pretty-print directory contents
