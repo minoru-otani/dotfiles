@@ -242,6 +242,3 @@ if has ('nvim') && !filereadable(expand('~/.vim_no_python'))
     let $PATH = s:python3_dir . '/bin:' .$PATH
   endif
 endif
-
-" :checkhealthのperl providerのエラーが出るので、一旦、perlのチェックをやめる
-let g:loaded_perl_provider = 0
