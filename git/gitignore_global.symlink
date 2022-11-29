@@ -38,6 +38,6 @@ KCW
 QEHeat/
 
 # autoenv.zsh
-venv/*
+venv/
 .autoenv.zsh
 .autoenv_leave.zsh
