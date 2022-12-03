@@ -33,9 +33,9 @@ export MANPATH=/usr/local/share/man:$MANPATH
 # https://rksz.hateblo.jp/entry/2013/01/13/155813
 # (このページの安直な方法でとりあえずたいしょ）
 alias sshohtaka="TERM=xterm-256color-italic ssh -XC ohtaka"
-alias sshcygnus="TERM=xterm-256color-italic ssh -XC cygnus"
-alias sshnagofx="TERM=xterm-256color-italic ssh -XC nagoya1"
-alias sshnagocx="TERM=xterm-256color-italic ssh -XC nagoya2"
+alias sshcygnus="TERM=xterm-256color-italic LC_CTYPE=en_US.utf8 LANG=en_US.utf8 ssh -XC cygnus"
+alias sshnagofx="TERM=xterm-256color-italic LC_CTYPE=en_US.utf8 LANG=en_US.utf8 ssh -XC nagoya1"
+alias sshnagocx="TERM=xterm-256color-italic LC_CTYPE=en_US.utf8 LANG=en_US.utf8 ssh -XC nagoya2"
 #ssh-add -A &>/dev/null
 #eval `ssh-agent -s`
 if [[ -d $HOME/.ssh ]]; then
