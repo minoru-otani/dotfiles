@@ -47,7 +47,12 @@ git_status() {
     vcs_info
 
     local git_branch="$vcs_info_msg_0_"
+    # ${parameter#word} 前方一致除去
+    # git_branchから'heads/'に一致する部分を除去して、
+    # その後ろを残す。
     git_branch="${git_branch#heads/}"
+    # ${parameter/pattern/string} 文字列置換
+    # git_branchから'...'を取り除く
     git_branch="${git_branch/.../}"
 
     [[ -z "$git_branch" ]] && return
@@ -164,7 +169,9 @@ git_status() {
 }
 
 async_init
+# Start a new worker
 async_start_worker vcs_info
+# Register a callback for completed jobs.
 async_register_callback vcs_info git_status_done
 
 add-zsh-hook precmd () {
