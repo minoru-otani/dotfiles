@@ -21,6 +21,7 @@ if OS.mac?
   brew 'npm'
   brew 'openblas'
   brew 'open-mpi'
+  brew 'open-babel'
   brew 'python-tk'
   brew 'povray'
   brew 'scalapack'
