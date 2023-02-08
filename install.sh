@@ -351,7 +351,7 @@ case "$1" in
       setup_git
       ;;
     *)
-        echo -e $"\nUsage: $(basename "$0") {backup|link|git|homebrew|shell|terminfo|mac|linux}\n"
+        echo -e $"\nUsage: $(basename "$0") {backup|link|git|homebrew|shell|terminfo|macos|mac|linux}\n"
         exit 1
         ;;
 esac
