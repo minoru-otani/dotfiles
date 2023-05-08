@@ -48,6 +48,7 @@ if OS.mac?
   cask 'mactex-no-gui'
   cask 'mathpix-snipping-tool'
   cask 'papers'
+  cask 'sitesuker-pro'
   cask 'Skim'
   cask 'slack'
   cask 'stay'

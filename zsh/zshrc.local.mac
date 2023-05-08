@@ -1,5 +1,6 @@
 # Latex
-alias vitex="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket /usr/local/bin/nvim"
+#alias vitex="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket /usr/local/bin/nvim"
+alias vitex="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket /opt/homebrew/bin/nvim"
 # VMD
 alias vmd='/Applications/VMD.app/Contents/MacOS/VMDLauncher'
 # SSH environment
