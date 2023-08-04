@@ -41,7 +41,13 @@ alias sshfocus="TERM=xterm-256color-italic LC_CTYPE=en_US.utf8 LANG=en_US.utf8 s
 #ssh-add -A &>/dev/null
 #eval `ssh-agent -s`
 if [[ -d $HOME/.ssh ]]; then
-  for SECRET_FILE in $(ls $HOME/.ssh/*.sec) ; do
+  for SECRET_FILE in $(ls "$HOME/.ssh/"*.sec) ; do
     ssh-add --apple-use-keychain $SECRET_FILE &>/dev/null
   done
+fi
+# command -v pyenv 1の1は標準出力を表し、1>/dev/nullとすることによって、標準出力を捨てる。
+# 2>&1で標準エラーを標準出力にリダイレクトする。
+if command -v pyenv 1>/dev/null 2>&1; then
+# evalで$(pyenv init -)で返されるpyenvの初期化コードを実行する。"-"はコマンドが結果を標準出力に表示することを示す慣習的な方法。
+  eval "$(pyenv init -)"
 fi
