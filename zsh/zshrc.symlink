@@ -1,6 +1,7 @@
 export ZSH=$DOTFILES/zsh
 
 if [[ -d $DOTFILES/zsh/functions ]]; then
+    # -Uを付けるとユーザ側で定義したaliasが関数に干渉するのを防ぐ
     for func in $DOTFILES/zsh/functions/*(:t); autoload -U $func
 fi
 
