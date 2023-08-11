@@ -284,6 +284,8 @@ setup_macos() {
         defaults write -g _HIHideMenuBar -bool true
         echo "Enable Automatically hide & show dock"
         defaults write com.apple.dock autohide -bool true
+        echo "Disable recent apps in doc"
+	defaults write com.apple.dock recent-apps -int 0
         # Trackpad
         echo "Enable three finger drag"
         defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
