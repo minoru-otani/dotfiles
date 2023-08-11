@@ -71,9 +71,12 @@ setup_symlinks() {
     title "Creating symlinks"
 
     for file in $(get_linkables) ; do
+        # $() コマンド置換。括弧で囲んだ文字列はコマンドとして実行され、標準出力が文字列として返す
         target="$HOME/.$(basename "$file" '.symlink')"
+        # basenameでパス付きファイル名を取り出し、.symlinkという接尾辞を取り除く
         if [ -e "$target" ]; then
             info "~${target#$HOME} already exists... Skipping."
+            # ${name#pattern} nameの先頭がpatternにマッチした場合、マッチした部分を削除した状態で文字列を返す
         else
             info "Creating symlink for $file"
             ln -s "$file" "$target"
@@ -91,12 +94,31 @@ setup_symlinks() {
     for config in $config_files; do
         target="$HOME/.config/$(basename "$config")"
         if [ -e "$target" ]; then
+            # ${parameter#word} wordに一致する前方の文字を削除
             info "~${target#$HOME} already exists... Skipping."
         else
             info "Creating symlink for $config"
             ln -s "$config" "$target"
         fi
     done
+
+    info "Creating OS dependent zshrc.local"
+    if [[ "$(uname)" == "Darwin" ]]; then
+      target="${HOME}/.zshrc.local"
+      if [[ -e "$target" ]]; then
+        info "~${target#$HOME} already exists... Skipping."
+      else
+        info "Creating symlink for $target"
+        ln -s "$DOTFILES/zsh/zshrc.local.mac" "$target"
+      fi
+    else
+      if [[ -e "$target" ]]; then
+        info "~${target#$HOME} already exists... Skipping."
+      else
+        info "Creating symlink for $target"
+        ln -s "$DOTFILES/zsh/zshrc.local.linux" "$target"
+      fi
+    fi
 }
 
 setup_git() {
