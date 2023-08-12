@@ -51,3 +51,16 @@ if command -v pyenv 1>/dev/null 2>&1; then
 # evalで$(pyenv init -)で返されるpyenvの初期化コードを実行する。"-"はコマンドが結果を標準出力に表示することを示す慣習的な方法。
   eval "$(pyenv init -)"
 fi
+# use exa if available
+if [[ -x "$(command -v exa)" ]]; then
+  alias ll="exa --icons --git --long"
+  alias l="exa --icons --git --all --long"
+  alias lt='exa -T -L 5 -a -I "node_modules|.git|.cache" --icons'
+  alias ltl='exa -T -L 3 -a -I "node_modules|.git|.cache" -l --icons'
+else
+  alias l="ls -lah ${colorflag}"
+  alias ll="ls -lFh ${colorflag}"
+fi
+alias la="ls -AF ${colorflag}"
+alias lld="ls -l | grep ^d"
+alias rmf="rm -rf"
