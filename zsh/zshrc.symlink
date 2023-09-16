@@ -52,8 +52,8 @@ compinit
 
 # prepend_path $HOME/npmbin/node_modules/.bin
 # prepend_path関数を使ってパスに追加する
-prepend_path /usr/local/opt/grep/libexec/gnubin
-prepend_path /usr/local/sbin
+prepend_path /opt/homebrew/opt/grep/libexec/gnubin
+prepend_path /opt/homebrew/sbin
 prepend_path $DOTFILES/bin
 prepend_path $HOME/bin
 

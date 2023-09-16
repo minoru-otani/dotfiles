@@ -29,7 +29,7 @@ export VIM_TMP="$HOME/.vim-tmp"
 
 fpath=(
     $DOTFILES/zsh/functions
-    /usr/local/share/zsh/site-functions
+    /opt/homebrew/share/zsh/site-functions
     $fpath
 )
 # =() 配列を初期化して代入
