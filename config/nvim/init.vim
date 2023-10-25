@@ -236,7 +236,7 @@ if has ('nvim') && !filereadable(expand('~/.vim_no_python'))
     if ! isdirectory(s:python3_dir)
       echo 'prepare python virtual environment into ~/.vim ...'
       call system('python3 -m venv ' . s:python3_dir)
-      call system('source ' . s:python3_dir . '/bin/activate && python3 -m pip install neovim jedi pylint fortls neovim-remote')
+      call system('source ' . s:python3_dir . '/bin/activate && python3 -m pip install neovim jedi pylint fortls fortran-language-server neovim-remote')
     endif
     let g:python3_host_prog = s:python3_dir . '/bin/python3'
     let $PATH = s:python3_dir . '/bin:' .$PATH
