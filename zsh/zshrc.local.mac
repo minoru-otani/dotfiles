@@ -64,3 +64,6 @@ fi
 alias la="ls -AF ${colorflag}"
 alias lld="ls -l | grep ^d"
 alias rmf="rm -rf"
+# set PKG_CONFIG_PATH
+export PKG_CONFIG_PATH="/opt/homebrew/opt/scalapack/lib/pkgconfig:/opt/homebrew/opt/openblas/lib/pkgconfig:$PKG_CONFIG_PATH"
+
