@@ -50,6 +50,7 @@ if OS.mac?
   cask 'papers'
   cask 'Skim'
   cask 'slack'
+#  cask 'stay'
   cask 'vesta'
   cask 'visual-studio-code'
   cask 'xquartz'
