@@ -6,40 +6,40 @@ if OS.mac?
   tap 'homebrew/cask'
   tap 'homebrew/cask-fonts'
   #packages
-  #brew 'agiliopadua/extras/xcrysden'
-  #brew 'blackhole-16ch'
-  brew 'fftw'
-  #brew 'ffmpeg'
   brew 'gcc'
+  brew 'open-mpi'
+  brew 'fftw'
+  brew 'openblas'
+  brew 'scalapack'
+  brew 'mas'
+  brew 'ffmpeg'
   brew 'graphviz'
   brew 'gnuplot'
-  #brew 'imagemagick'
-  #brew 'lapack'
   brew 'lftp'
-  brew 'mas'
   brew 'nkf'
   brew 'npm'
-  brew 'openblas'
-  brew 'open-mpi'
   brew 'open-babel'
   brew 'python-tk'
   brew 'povray'
-  brew 'scalapack'
-  #brew 'sphinx-doc'
-  #brew 'socat'
-  #brew 'wkhtmltopdf'
   brew 'xclip'
   brew 'xpdf'
   brew 'unar'
+  #brew 'agiliopadua/extras/xcrysden'
+  #brew 'imagemagick'
+  #brew 'sphinx-doc'
+  #brew 'socat'
+  #brew 'wkhtmltopdf'
+  #brew 'blackhole-16ch'
   #Applications
   #cask 'background-music'
-  cask '1password'
+  #cask '1password'
   #cask 'adobe-acrobat-reader'
+  #cask 'gimp'
+  #cask 'sitesuker-pro'
   cask 'deepl'
   cask 'docker'
   cask 'firefox'
   cask 'font-hack-nerd-font'
-  cask 'gimp'
   cask 'google-chrome'
   cask 'grammarly'
   cask 'inkscape'
@@ -48,10 +48,8 @@ if OS.mac?
   cask 'mactex-no-gui'
   cask 'mathpix-snipping-tool'
   cask 'papers'
-  cask 'sitesuker-pro'
   cask 'Skim'
   cask 'slack'
-  cask 'stay'
   cask 'vesta'
   cask 'visual-studio-code'
   cask 'xquartz'
@@ -59,7 +57,7 @@ if OS.mac?
   mas 'keynote', id: 409183694
   mas 'numbers', id: 409203825
   mas 'pages', id: 409201541
-  mas 'GoodNotes 5', id: 1444383602
+  mas 'GoodNotes 6', id: 1444383602
   mas 'LadioCast', id: 411213048
 elsif OS.linux?
   brew 'gcc'
@@ -88,4 +86,4 @@ brew 'tmux' # terminal multiplexer
 brew 'tree' # pretty-print directory contents
 brew 'vim' # Vim (latest)
 brew 'yarn'
-brew 'zsh' # zsh (latest)
+
