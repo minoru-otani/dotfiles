@@ -405,6 +405,15 @@ alias nr="npm run"
 source "$DOTFILES/zsh/utils.zsh"
 source "$DOTFILES/zsh/prompt.zsh"
 
+# sshでx11をforwardしている時、terminalの$DISPLAYとtmux内での$DISPLAYの不一致がohtakaで起こった。それに対処するために以下のスクリプトを追加（2023/12/05）
+if [ -n "$TMUX" ]; then
+  # SSH接続を通じているか確認
+  if [ -n "$SSH_CONNECTION" ]; then
+    # 現在のターミナルのDISPLAY値を取得して設定
+    export DISPLAY=$(tmux show-environment | grep '^DISPLAY' | cut -d'=' -f2)
+  fi
+fi
+
 # If a local zshrc exists, source it
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
