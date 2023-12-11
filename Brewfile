@@ -24,6 +24,8 @@ if OS.mac?
   brew 'xclip'
   brew 'xpdf'
   brew 'unar'
+  brew 'cpanm'
+  brew 'youtube-dl'
   #brew 'agiliopadua/extras/xcrysden'
   #brew 'imagemagick'
   #brew 'sphinx-doc'
