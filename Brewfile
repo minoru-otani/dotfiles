@@ -6,6 +6,7 @@ if OS.mac?
   tap 'homebrew/cask'
   tap 'homebrew/cask-fonts'
   #packages
+  brew 'zsh'
   brew 'gcc'
   brew 'open-mpi'
   brew 'fftw'
