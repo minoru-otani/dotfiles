@@ -53,7 +53,7 @@ if OS.mac?
   cask 'papers'
   cask 'Skim'
   cask 'slack'
-  cask 'nortion'
+  cask 'notion'
   cask 'vesta'
   cask 'visual-studio-code'
   cask 'xquartz'
