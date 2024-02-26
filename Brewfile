@@ -6,7 +6,6 @@ if OS.mac?
   tap 'homebrew/cask'
   tap 'homebrew/cask-fonts'
   #packages
-  brew 'zsh'
   brew 'gcc'
   brew 'open-mpi'
   brew 'fftw'
@@ -16,13 +15,14 @@ if OS.mac?
   brew 'ffmpeg'
   brew 'graphviz'
   brew 'gnuplot'
+  brew 'imagemagick'
   brew 'lftp'
   brew 'nkf'
   brew 'npm'
   brew 'open-babel'
-  brew 'python-tk'
   brew 'povray'
-  brew 'xclip'
+  brew 'pngpaste' # paste clipboard image to file
+  brew 'python-tk'
   brew 'xpdf'
   brew 'unar'
   brew 'cpanm'
@@ -65,10 +65,11 @@ if OS.mac?
   mas 'LadioCast', id: 411213048
 elsif OS.linux?
   brew 'gcc'
-  brew 'xclip' # access to clipboard (similar to pbcopy/pbpaste)
 end
 
 #packages
+brew 'zsh'
+brew 'xclip' # access to clipboard (similar to pbcopy/pbpaste)
 brew 'a2ps'
 brew 'bat' # better cat
 brew 'cmake' # cmake (latest)

@@ -22,6 +22,9 @@ tscommand*.txt
 # npm things
 npm-debug.log
 
+# pyenv
+.python-version
+
 #my own
 include/qe_cdefs.h
 PW/examples/ESM_example/results/
