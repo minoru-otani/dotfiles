@@ -150,6 +150,7 @@
     whitespace = cr-at-eol
 [delta]
     features = unobtrusive-line-numbers decorations
+    side-by-side = true # use split view
     whitespace-error-style = 22 reverse
     syntax-theme = base16-256
 [delta "unobtrusive-line-numbers"]
