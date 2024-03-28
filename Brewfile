@@ -6,6 +6,7 @@ if OS.mac?
   tap 'homebrew/cask'
   tap 'homebrew/cask-fonts'
   #packages
+  brew 'cpanm'
   brew 'gcc'
   brew 'open-mpi'
   brew 'fftw'
@@ -20,13 +21,14 @@ if OS.mac?
   brew 'nkf'
   brew 'npm'
   brew 'open-babel'
+  brew 'poppler' # pdf tool
   brew 'povray'
-  brew 'pngpaste' # paste clipboard image to file
   brew 'python-tk'
-  brew 'xpdf'
+  brew 'xclip'
+#  brew 'xpdf'
   brew 'unar'
-  brew 'cpanm'
   brew 'youtube-dl'
+  brew 'zsh'
   #brew 'agiliopadua/extras/xcrysden'
   #brew 'imagemagick'
   #brew 'sphinx-doc'
