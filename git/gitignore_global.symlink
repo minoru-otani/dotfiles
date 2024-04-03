@@ -39,6 +39,7 @@ LIBBEEF/
 MBD/
 KCW
 QEHeat/
+install/libcuda_devxlib
 
 # autoenv.zsh
 venv/
