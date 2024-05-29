@@ -28,6 +28,9 @@ let maplocalleader = ","
 " https://stackoverflow.com/questions/1444322/how-can-i-close-a-buffer-without-closing-the-window
 map <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
 
+"Do checkhealth
+nnoremap <leader>ch :checkhealth<CR>
+
 "Tab window switch
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
