@@ -12,8 +12,11 @@ $biber = 'biber --bblencoding=utf8 -u -U --output_safechars %O %S';
 $makeindex = 'mendex %O -o %D %S';
 
 # DVI / PDF
-$dvipdf = 'dvipdfmx %O -o %D %S';
-$pdf_mode = 3;
+$dvips = 'dvips %O -o %D %S';
+$dvipdf = 'ps2pdf %O %S %D';
+$pdf_mode = 4;
+#$dvipdf = 'dvipdfmx %O -o %D %S';
+#$pdf_mode = 3;
 
 # preview
 $pvc_view_file_via_temporary = 0;
