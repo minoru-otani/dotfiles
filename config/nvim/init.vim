@@ -24,6 +24,10 @@ set shortmess+=c       "https://qiita.com/koara-local/items/40153e1135bb8101cf2d
 let mapleader = "\<Space>"
 let maplocalleader = ","
 
+"言語を英語にする
+let $LC_ALL = 'en_US.UTF-8'
+let $LANG = 'en_US.UTF-8'
+
 "Close buffer without closing the window
 " https://stackoverflow.com/questions/1444322/how-can-i-close-a-buffer-without-closing-the-window
 map <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>

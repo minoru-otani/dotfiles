@@ -6,6 +6,8 @@
     "rootPatterns": [".fortls", ".git/"]
    }
   },
+  "suggest.localityBonus": true,
+  "suggest.selection": "recentlyUsed",
   "suggest.completionItemKindLabels": {
       "function": "\uf794",
       "method":"\uf6a6",
