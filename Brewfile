@@ -27,7 +27,7 @@ if OS.mac?
   brew 'xclip'
 #  brew 'xpdf'
   brew 'unar'
-  brew 'youtube-dl'
+  brew 'yt-dlp'
   brew 'zsh'
   #brew 'agiliopadua/extras/xcrysden'
   #brew 'imagemagick'
