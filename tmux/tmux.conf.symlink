@@ -158,7 +158,7 @@ set -g @continuum-boot-options 'iterm'
 # Start iTerm in fullscreen
 set -g @continuum-boot-options 'iterm,fullscreen'
 # Default path is '~/.tmux/resurrect' but can be changed with
-# set -g @resurrect-dir '~/iCloud/.tmux-resurrect/'
+set -g @resurrect-dir '~/.tmux/resurrect/'
 
 
 source-file "$DOTFILES/tmux/themes/bubbles.conf"
