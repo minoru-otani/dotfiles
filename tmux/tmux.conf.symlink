@@ -151,6 +151,7 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 # Last saved environment automatically restore
 set -g @continuum-restore 'on'
+set -g @continuum-save-interval '1'         # セッションを保存する間隔を 1 分にする
 # tmux is automatically started after the computer is tuned on.
 set -g @continuum-boot 'on'
 # Start iTerm instead of Terminal.app
