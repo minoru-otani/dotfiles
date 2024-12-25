@@ -12,9 +12,21 @@ hook_source='''
       \   '-file-line-error',
       \   '-synctex=1',
       \   '-interaction=nonstopmode',
-      \   '-pdf',
+      \   '-pdfdvi',
       \ ]}
   let g:vimtex_compiler_progname = 'nvr'
+'''
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+on_ft = ['tex', 'latex']  # 必要なファイルタイプを指定
+hook_source='''
+  " 必要に応じてauto-pairsの設定を追加
+  let g:AutoPairs = {
+      \ '\begin{': '\end{',
+      \ '{': '}',
+      \ '(': ')',
+      \ '[': ']'
+  \ }
 '''
 
 #[[plugins]]
