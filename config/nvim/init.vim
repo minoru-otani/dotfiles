@@ -233,6 +233,7 @@ function! CocJumpAction() abort
 endfunction
 
 nnoremap <silent> <C-t> :<C-u>call CocActionAsync('jumpDefinition', CocJumpAction())<CR>
+autocmd FileType tex let b:coc_pairs = [["$", "$"]]
 
 " nvimを立ち上げた時にpython仮想環境をactivateして使う
 " https://rcmdnk.com/blog/2020/08/11/computer-vim/
