@@ -4,6 +4,11 @@
     "command": "fortls",
     "filetypes": ["fortran"],
     "rootPatterns": [".fortls", ".git/"]
+   },
+    "texlab": {
+    "command": "texlab",
+    "filetypes": ["tex", "bib"],
+    "rootPatterns": ["*.tex", ".git/"]
    }
   },
   "suggest.localityBonus": true,
