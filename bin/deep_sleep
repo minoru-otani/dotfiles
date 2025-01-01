@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Check for root privileges
+if [[ $EUID -ne 0 ]]; then
+   echo "This script requires root privileges. Please run with sudo." 
+   exit 1
+fi
+
+echo "Retrieving current sleep settings..."
+
+# Determine the current power source (Battery Power or AC Power)
+CURRENT_POWER_SOURCE=$(pmset -g batt | grep 'Now drawing from' | awk -F"'" '{print $2}')
+
+# Retrieve settings based on the power source
+if [[ $CURRENT_POWER_SOURCE == "Battery Power" ]]; then
+  echo "Current power source: Battery Power"
+  HIBERNATE_MODE=$(pmset -g custom | grep -A 10 'Battery Power' | grep ' hibernatemode' | awk '{print $2}')
+  STANDBY_DELAY_LOW=$(pmset -g custom | grep -A 10 'Battery Power' | grep ' standbydelaylow' | awk '{print $2}')
+  STANDBY_DELAY_HIGH=$(pmset -g custom | grep -A 10 'Battery Power' | grep ' standbydelayhigh' | awk '{print $2}')
+elif [[ $CURRENT_POWER_SOURCE == "AC Power" ]]; then
+  echo "Current power source: AC Power"
+  HIBERNATE_MODE=$(pmset -g custom | grep -A 10 'AC Power' | grep ' hibernatemode' | awk '{print $2}')
+  STANDBY_DELAY_LOW=$(pmset -g custom | grep -A 10 'AC Power' | grep ' standbydelaylow' | awk '{print $2}')
+  STANDBY_DELAY_HIGH=$(pmset -g custom | grep -A 10 'AC Power' | grep ' standbydelayhigh' | awk '{print $2}')
+else
+  echo "Error: Unable to determine the current power source."
+  exit 1
+fi
+
+# Display retrieved settings
+echo "Current settings:"
+echo "  hibernatemode: $HIBERNATE_MODE"
+echo "  standbydelaylow: ${STANDBY_DELAY_LOW:-Not set}"
+echo "  standbydelayhigh: ${STANDBY_DELAY_HIGH:-Not set}"
+
+# Save the original settings
+ORIGINAL_HIBERNATE_MODE=$HIBERNATE_MODE
+ORIGINAL_STANDBY_DELAY_LOW=${STANDBY_DELAY_LOW:-10800}  # Default to 3 hours if not set
+ORIGINAL_STANDBY_DELAY_HIGH=${STANDBY_DELAY_HIGH:-86400} # Default to 24 hours if not set
+
+# Apply temporary deep sleep settings
+echo "Applying temporary deep sleep settings..."
+pmset -a hibernatemode 25
+pmset -a standby 1
+pmset -a standbydelaylow 10
+pmset -a standbydelayhigh 10
+
+# Initiate deep sleep
+echo "Entering deep sleep mode..."
+pmset sleepnow
+
+# Restore original settings upon waking
+echo "Restoring original sleep settings..."
+pmset -a hibernatemode $ORIGINAL_HIBERNATE_MODE
+pmset -a standbydelaylow $ORIGINAL_STANDBY_DELAY_LOW
+pmset -a standbydelayhigh $ORIGINAL_STANDBY_DELAY_HIGH
+
+echo "Original settings have been restored."
