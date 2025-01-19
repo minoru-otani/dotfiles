@@ -255,8 +255,22 @@ function cdwt() {
 
     cd ${selectedWorkTreeDir}
 }
+#=====================
+# fzf + zsh command
+#=====================
+fssh() {
+  local host
+  host=$(cat ~/.ssh/config | grep '^Host ' | awk '{print $2}' | fzf)
+  [[ -n $host ]] && ssh "$host"
+}
 
+function fkill() {
+    ps -ef | fzf --preview 'echo {}' | awk '{print $2}' | xargs kill -9
+}
+
+#=====================
 # fzf + git command
+#=====================
 # fbr - checkout git branch
 fbr() {
   local branches branch
@@ -430,5 +444,3 @@ fi
 # pyenvの環境変数設定
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

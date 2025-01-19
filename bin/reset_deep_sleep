@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# 管理者権限が必要です
+if [[ $EUID -ne 0 ]]; then
+   echo "このスクリプトは管理者権限で実行する必要があります。" 
+   exit 1
+fi
+
+echo "スリープ設定をデフォルトに戻します..."
+
+# ハイバネーションモードをデフォルト (MacBook Air の一般的な設定) に戻す
+pmset -a hibernatemode 3
+
+# スタンバイモードを元に戻す
+pmset -a standby 1
+
+# スタンバイ遅延時間をデフォルトに戻す (例: 10800秒 = 3時間)
+pmset -a standbydelaylow 10800
+pmset -a standbydelayhigh 86400
+
+# Wake on LANやUSB接続による復帰を元に戻す
+pmset -a womp 1
+pmset -a proximitywake 1
+pmset -a powernap 1
+
+echo "スリープ設定がデフォルトに戻りました。"
