@@ -41,7 +41,7 @@ log_action() {
 }
 
 show_usage() {
-    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew}\n"
+    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults}\n"
     exit 1
 }
 
@@ -411,6 +411,199 @@ unset_homebrew() {
     fi
 }
 
+# Setup system preferences
+setup_defaults() {
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "Finder: set default view as \"list\""
+        #Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
+        defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+        echo "Finder: enable showing all file extensions"
+        defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+        echo "Finder: show hidden files by default"
+        defaults write com.apple.Finder AppleShowAllFiles -bool false
+        # Set Terminal.app to use UTF-8 encoding exclusively (Terminal.appでUTF-8を使用)
+        echo "Terminal: only use UTF-8"
+        defaults write com.apple.terminal StringEncodings -array 4
+        # Expand save dialog by default (保存ダイアログをデフォルトで拡張)
+        echo "Finder: expand save dialog by default"
+        defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+        echo "Finder: show the ~/Library folder"
+        chflags nohidden ~/Library
+        echo "Disable dictation shortcut"
+        defaults write com.apple.HIToolbox AppleDictationAutoEnable -int 1
+        echo "Enable subpixel font rendering on non-Apple LCDs"
+        defaults write NSGlobalDomain AppleFontSmoothing -int 2
+        echo "Use current directory as default search scope in Finder"
+        defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+        echo "Finder: Show Path bar"
+        defaults write com.apple.finder ShowPathbar -bool true
+        echo "Finder: Show Status bar"
+        defaults write com.apple.finder ShowStatusBar -bool true
+        echo "Disable press-and-hold for keys in favor of key repeat"
+        defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+        echo "Set a blazingly fast keyboard repeat rate"
+        defaults write NSGlobalDomain KeyRepeat -int 2
+        echo "Set a shorter Delay until key repeat"
+        defaults write NSGlobalDomain InitialKeyRepeat -int 15
+        echo "Enable tap to click (Trackpad)"
+        defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+        defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+        echo "Enable Safari’s debug menu"
+        defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+        echo "Finder: Show fullpath on title bar"
+        defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+        echo "Disable RichText in TextEdit"
+        defaults write com.apple.TextEdit RichText -int 0
+        echo "Disable Quarantine for unknown app"
+        defaults write com.apple.LaunchServices LSQuarantine -bool false
+        echo "Disable crash report"
+        defaults write com.apple.CrashReporter DialogType -string "none"
+        echo "Disable auto open download file"
+        defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+        echo "Enable text selection on quick look"
+        defaults write com.apple.finder QLEnableTextSelection -bool true
+        echo "Disable generate DS_Store file on external storage"
+        defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+        echo "Disable automatically rearrange Spaces based on most recent use"
+        defaults write com.apple.dock mru-spaces -bool false
+        echo "Enable Put display to Sleep in hot corner -bottom-left"
+        defaults write com.apple.dock wvous-bl-corner -int 10
+        defaults write com.apple.dock wvous-bl-modifer -int 0
+        echo "Set the icon size of Dock items to 36 pixels"
+        defaults write com.apple.dock tilesize -int 36
+        echo "Enable Automatically hide & show menubar"
+        defaults write -g _HIHideMenuBar -bool true
+        echo "Enable Automatically hide & show dock"
+        defaults write com.apple.dock autohide -bool true
+        echo "Disable recent apps in dock"
+        defaults write com.apple.dock recent-apps -bool false
+        echo "Enable three finger drag"
+        defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+        defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+        echo "Disable desktop switching animation"
+        defaults write com.apple.dock expose-animation-duration -float 0.1
+        # Shortcut
+        # https://apple.stackexchange.com/questions/201816/how-do-i-change-mission-control-shortcuts-from-the-command-line
+        # https://apple.stackexchange.com/questions/344494/how-to-disable-default-mission-control-shortcuts-in-terminal
+        #
+        #echo "Keyboard shortcut Misshon Control: Move left/right a space ctrl+alt+<-/->"
+        #defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 "{
+        #  enabled = 1; value = { parameters = (65535, 123, 11272192); type = standard; };
+        #}"
+        #defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 "{
+        #  enabled = 1; value = { parameters = (65535, 123, 11403264); type = standard; };
+        #}"
+        #defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 "{
+        #  enabled = 1; value = { parameters = (65535, 124, 11272192); type = standard; };
+        #}"
+        #defaults write ~/Library/Preferences/com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 "{
+        #  enabled = 1; value = { parameters = (65535, 124, 11403264); type = standard; };
+        #}"
+        for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
+    else
+        warning "macOS not detected. Skipping."
+    fi
+}
+
+unset_defaults() {
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "Reset Finder’s default view mode to system default"
+        defaults delete com.apple.finder FXPreferredViewStyle
+        echo "Reset file extension visibility setting to system default"
+        defaults delete NSGlobalDomain AppleShowAllExtensions
+        echo "Reset hidden files visibility in Finder to system default"
+        defaults delete com.apple.Finder AppleShowAllFiles
+        echo "Reset Terminal.app encoding settings to system default"
+        defaults delete com.apple.terminal StringEncodings
+        echo "Reset save dialog expansion setting to system default"
+        defaults delete NSGlobalDomain NSNavPanelExpandedStateForSaveMode
+        echo "Hide the ~/Library folder in Finder"
+        chflags hidden ~/Library
+        echo "Reset dictation shortcut to system default"
+        defaults delete com.apple.HIToolbox AppleDictationAutoEnable
+        echo "Reset subpixel font rendering setting to system default"
+        defaults delete NSGlobalDomain AppleFontSmoothing
+        echo "Reset Finder's default search scope to system default"
+        defaults delete com.apple.finder FXDefaultSearchScope
+        echo "Finder: Reset Path bar visibility to system default"
+        defaults delete com.apple.finder ShowPathbar
+        echo "Finder: Reset Status bar visibility to system default"
+        defaults delete com.apple.finder ShowStatusBar
+        echo "Reset press-and-hold for keys to system default"
+        defaults delete NSGlobalDomain ApplePressAndHoldEnabled
+        echo "Reset keyboard repeat rate to system default"
+        defaults delete NSGlobalDomain KeyRepeat
+        echo "Reset initial key repeat delay to system default"
+        defaults delete NSGlobalDomain InitialKeyRepeat
+        echo "Reset tap to click setting to system default"
+        defaults delete com.apple.AppleMultitouchTrackpad Clicking
+        defaults delete com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking
+        echo "Reset Safari debug menu visibility to system default"
+        defaults delete com.apple.Safari IncludeInternalDebugMenu
+        echo "Reset fullpath visibility on title bar to system default"
+        defaults delete com.apple.finder _FXShowPosixPathInTitle
+        echo "Reset TextEdit to use RichText by default"
+        defaults delete com.apple.TextEdit RichText
+        echo "Reset Quarantine setting for unknown apps to system default"
+        defaults delete com.apple.LaunchServices LSQuarantine
+        echo "Reset crash report dialog to system default"
+        defaults delete com.apple.CrashReporter DialogType
+        echo "Reset Safari auto-open downloads setting to system default"
+        defaults delete com.apple.Safari AutoOpenSafeDownloads
+        echo "Reset text selection on Quick Look to system default"
+        defaults delete com.apple.finder QLEnableTextSelection
+        echo "Reset DS_Store generation setting to system default"
+        defaults delete com.apple.desktopservices DSDontWriteNetworkStores
+        echo "Reset Spaces auto-rearrange setting to system default"
+        defaults delete com.apple.dock mru-spaces
+        echo "Reset hot corner bottom-left action to system default"
+        defaults delete com.apple.dock wvous-bl-corner
+        defaults delete com.apple.dock wvous-bl-modifer
+        echo "Reset Dock item icon size to system default"
+        defaults delete com.apple.dock tilesize
+        echo "Reset menubar auto-hide setting to system default"
+        defaults delete -g _HIHideMenuBar
+        echo "Reset Dock auto-hide setting to system default"
+        defaults delete com.apple.dock autohide
+        echo "Reset recent apps in Dock visibility to system default"
+        defaults delete com.apple.dock recent-apps
+        echo "Reset three-finger drag setting to system default"
+        defaults delete com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag
+        defaults delete com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag
+        echo "Reset desktop switching animation speed to system default"
+        defaults delete com.apple.dock expose-animation-duration
+        #
+        for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
+    else
+        warning "macOS not detected. Skipping."
+    fi
+}
+
+setup_shell() {
+    [[ -n "$(command -v brew)" ]] && zsh_path="$(brew --prefix)/bin/zsh" || zsh_path="$(which zsh)"
+    if [[ "$(uname)" == "Darwin" ]]; then
+      if ! grep "$zsh_path" /etc/shells; then
+          info "adding $zsh_path to /etc/shells"
+          echo "$zsh_path" | sudo tee -a /etc/shells
+      fi
+
+      if [[ "$SHELL" != "$zsh_path" ]]; then
+          chsh -s "$zsh_path"
+          info "default shell changed to $zsh_path"
+      fi
+    else
+      if [[ "$SHELL" != "$zsh_path" ]]; then
+          info "default shell changed to $zsh_path"
+          cat <<_EOT_>> $HOME/.bash_profile
+if [ -x "$zsh_path" ]; then
+  export SHELL=$zsh_path
+  exec $SHELL -l
+fi
+_EOT_
+      fi
+    fi
+}
+
 # 引数を解析し、install または uninstall を判断する
 main() {
     # 引数がない場合はヘルプを表示
@@ -429,7 +622,7 @@ main() {
                 undo=true
                 shift
                 ;;
-            symlink|git|homebrew)
+            symlink|git|homebrew|defaults)
                 command="$1"
                 shift
                 ;;
@@ -471,6 +664,24 @@ main() {
             else
                 title "Setting up Homebrew"
                 setup_homebrew
+            fi
+            ;;
+        defaults)
+            if [ "$undo" = true ]; then
+                title "Removing system preferences setup"
+                unset_defaults
+            else
+                title "Setting up system preferences"
+                setup_defaults
+            fi
+            ;;
+        shell)
+            if [ "$undo" = true ]; then
+                title "Removing shell configuration"
+                unset_shell
+            else
+                title "Configuring shell"
+                setup_shell
             fi
             ;;
         *)
