@@ -41,7 +41,7 @@ log_action() {
 }
 
 show_usage() {
-    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults}\n"
+    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults|shell|terminfo}\n"
     exit 1
 }
 
@@ -323,48 +323,64 @@ setup_homebrew() {
         fi
     fi
 
-    # Brewfileから依存パッケージをインストール
-    info "Installing dependencies from Brewfile"
-    if [[ -f "Brewfile" ]]; then
-        brew bundle --file=Brewfile
-    else
-        warning "Brewfile not found. Skipping dependency installation."
+    # BrewfileとBrewfile.optionalのパスを設定
+    platform_brewfile=""
+    platform_brewfile_optional=""
+    if [[ "$(uname)" == "Darwin" ]]; then
+        platform_brewfile="Brewfile.mac"
+        platform_brewfile_optional="Brewfile.optional.mac"
+    elif [[ "$(uname)" == "Linux" ]]; then
+        platform_brewfile="Brewfile.linux"
+        platform_brewfile_optional="Brewfile.optional.linux"
     fi
 
-    # Brewfile.optionalを処理（存在する場合）
-    info "Installing optional dependencies from Brewfile.optional"
-    if [[ -f "Brewfile.optional" ]]; then
+    # Brewfileから依存パッケージをインストール
+    if [[ -f "$platform_brewfile" ]]; then
+        info "Installing dependencies from $platform_brewfile"
+        brew bundle --file="$platform_brewfile"
+    else
+        warning "$platform_brewfile not found. Skipping dependency installation."
+    fi
+
+    # Brewfile.optionalを処理
+    if [[ -f "$platform_brewfile_optional" ]]; then
+        info "Installing optional dependencies from $platform_brewfile_optional"
         read -rp "Install optional dependencies? [y/n]: " confirm
         if [[ $confirm =~ ^[Yy]$ ]]; then
-            brew bundle --file=Brewfile.optional
+            brew bundle --file="$platform_brewfile_optional"
             success "Installed optional dependencies."
         else
             info "Skipped optional dependencies."
         fi
     else
-        warning "Brewfile.optional not found."
+        warning "$platform_brewfile_optional not found."
     fi
 
-    # fzfをインストール
+    # fzfを設定
     echo -e
-    info "Installing fzf"
-    if [[ -d "$(brew --prefix)/opt/fzf" && -f "$HOME/.fzf.zsh" ]]; then
-        info "fzf is already installed and configured... Skipping."
+    info "Configuring fzf"
+    if ! [[ -d "$(brew --prefix)/opt/fzf" ]]; then
+        warning "fzf is not installed. Skipping configuration."
     else
-        "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
-        success "fzf installed successfully."
+        fzf_zsh="$HOME/.fzf.zsh"
+        if [[ -f "$fzf_zsh" ]]; then
+            info "$fzf_zsh already exists. Skipping configuration."
+        else
+            "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
+            success "fzf configured successfully."
+        fi
     fi
 }
 
 unset_homebrew() {
-    # 逆順アンインストールの共通処理
+    # BrewfileとBrewfile.optionalのアンインストール共通処理
     uninstall_from_brewfile() {
         local brewfile=$1
         if [[ -f "$brewfile" ]]; then
             info "Uninstalling dependencies from $brewfile in reverse order."
 
-            # catの逆のtacコマンドでBrewfileを下から読む
-            tac "$brewfile" | while read -r line; do
+            # ファイルの内容を逆順で処理
+            tail -r "$brewfile" | while read -r line; do
                 # コメント行や空行をスキップ
                 [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
 
@@ -386,28 +402,32 @@ unset_homebrew() {
         fi
     }
 
-    # BrewfileとBrewfile.optionalを処理
-    uninstall_from_brewfile "Brewfile"
-    #uninstall_from_brewfile "Brewfile.optional"
+    # BrewfileとBrewfile.optionalのパスを設定
+    platform_brewfile=""
+    platform_brewfile_optional=""
+    if [[ "$(uname)" == "Darwin" ]]; then
+        platform_brewfile="Brewfile.mac"
+        platform_brewfile_optional="Brewfile.optional.mac"
+    elif [[ "$(uname)" == "Linux" ]]; then
+        platform_brewfile="Brewfile.linux"
+        platform_brewfile_optional="Brewfile.optional.linux"
+    fi
 
-    # fzfのアンインストール
-    info "Checking for fzf installation"
-    if [[ -d "$(brew --prefix)/opt/fzf" ]]; then
-        info "Uninstalling fzf..."
-        brew uninstall --force fzf
-        success "fzf has been uninstalled."
-    
-        # .fzf.zshの削除
-        fzf_zsh="$HOME/.fzf.zsh"
-        if [[ -f "fzf_zsh" ]]; then
-            info "Removing $fzf_zsh"
-            rm -f "$fzf_zsh"
-            success "Removed $fzf_zsh."
-        else
-            info "$fzf_zsh does not exist... Skipping."
-        fi
+    # Brewfile.optionalの処理
+    uninstall_from_brewfile "$platform_brewfile_optional"
+
+    # Brewfileの処理
+    uninstall_from_brewfile "$platform_brewfile"
+
+    # fzfの設定ファイルを削除
+    info "Checking for fzf configuration"
+    fzf_zsh="$HOME/.fzf.zsh"
+    if [[ -f "$fzf_zsh" ]]; then
+        info "Removing $fzf_zsh"
+        rm -f "$fzf_zsh"
+        success "Removed $fzf_zsh."
     else
-        info "fzf is not installed... Skipping."
+        info "$fzf_zsh does not exist... Skipping."
     fi
 }
 
@@ -604,6 +624,83 @@ _EOT_
     fi
 }
 
+unset_shell() {
+    # Brewのzshパスを確認
+    local zsh_path
+    [[ -n "$(command -v brew)" ]] && zsh_path="$(brew --prefix)/bin/zsh" || zsh_path="$(which zsh)"
+
+    if [[ "$(uname)" == "Darwin" ]]; then
+        # /etc/shellsからzshのパスを削除
+        if grep -Fxq "$zsh_path" /etc/shells; then
+            info "Removing $zsh_path from /etc/shells"
+            escaped_path=$(printf '%s\n' "$zsh_path" | sed 's:/:\\/:g')  # スラッシュをエスケープ
+            sudo sed -i '' "/$escaped_path/d" /etc/shells
+            success "$zsh_path removed from /etc/shells."
+        else
+            info "$zsh_path is not in /etc/shells... Skipping."
+        fi
+
+        # デフォルトシェルをシステムのデフォルトに戻す
+        default_shell="$(dscl . -read /Users/$(whoami) UserShell | awk '{print $2}')"
+        if [[ "$SHELL" == "$zsh_path" ]]; then
+            chsh -s "$default_shell"
+            success "Default shell reverted to $default_shell."
+        else
+            info "Default shell is not $zsh_path... Skipping."
+        fi
+    else
+        # Linux: .bash_profileから設定を削除
+        local bash_profile="$HOME/.bash_profile"
+        if [[ -f "$bash_profile" ]]; then
+            if grep -q "export SHELL=$zsh_path" "$bash_profile"; then
+                info "Removing zsh configuration from $bash_profile"
+                sed -i "/export SHELL=$zsh_path/d" "$bash_profile"
+                sed -i "/exec \\$SHELL -l/d" "$bash_profile"
+                success "Removed zsh configuration from $bash_profile."
+            else
+                info "No zsh configuration found in $bash_profile... Skipping."
+            fi
+        else
+            info "$bash_profile does not exist... Skipping."
+        fi
+    fi
+}
+
+setup_terminfo() {
+    # tmux.terminfo の登録
+    info "Adding tmux.terminfo"
+    if tic -x "$DOTFILES/resources/tmux.terminfo"; then
+        success "Added tmux.terminfo."
+    else
+        warning "Failed to add tmux.terminfo."
+    fi
+
+    # xterm-256color-italic.terminfo の登録
+    info "Adding xterm-256color-italic.terminfo"
+    if tic -x "$DOTFILES/resources/xterm-256color-italic.terminfo"; then
+        success "Added xterm-256color-italic.terminfo."
+    else
+        warning "Failed to add xterm-256color-italic.terminfo."
+    fi
+
+}
+
+unset_terminfo() {
+    terminfo_dir="$HOME/.terminfo"
+
+    if [[ -d "$terminfo_dir" ]]; then
+        read -rp "Are you sure you want to remove the entire ~/.terminfo directory? [y/n]: " confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            rm -rf "$terminfo_dir"
+            success "~/.terminfo directory has been removed."
+        else
+            info "Operation cancelled. ~/.terminfo directory remains unchanged."
+        fi
+    else
+        info "~/.terminfo directory does not exist... Skipping."
+    fi
+}
+
 # 引数を解析し、install または uninstall を判断する
 main() {
     # 引数がない場合はヘルプを表示
@@ -622,7 +719,7 @@ main() {
                 undo=true
                 shift
                 ;;
-            symlink|git|homebrew|defaults)
+            symlink|git|homebrew|defaults|shell|terminfo)
                 command="$1"
                 shift
                 ;;
@@ -682,6 +779,15 @@ main() {
             else
                 title "Configuring shell"
                 setup_shell
+            fi
+            ;;
+        terminfo)
+            if [ "$undo" = true ]; then
+                title "Removing terminfo configuration"
+                unset_terminfo
+            else
+                title "Configuring terminfo"
+                setup_terminfo
             fi
             ;;
         *)
