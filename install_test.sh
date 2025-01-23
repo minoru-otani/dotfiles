@@ -323,6 +323,59 @@ setup_homebrew() {
         fi
     fi
 
+    # GCCのインストールと設定
+    echo -e
+    info "Checking GCC installation and configuring symbolic links"
+    if brew list gcc &>/dev/null; then
+        installed_version=$(brew info gcc --json | jq -r '.[0].installed[0].version' | sed 's/_.*//')
+        latest_version=$(brew info gcc --json | jq -r '.[0].versions.stable')
+
+        if [[ "$installed_version" == "$latest_version" ]]; then
+            info "GCC is already installed and up-to-date (version: $installed_version)."
+        else
+            warning "GCC is installed but outdated (installed: $installed_version, latest: $latest_version)."
+            read -rp "Do you want to upgrade GCC to the latest version? [y/n]: " confirm
+            if [[ $confirm =~ ^[Yy]$ ]]; then
+                info "Upgrading GCC..."
+                brew upgrade gcc
+                success "GCC upgraded to version $latest_version."
+            else
+                info "Skipped GCC upgrade."
+            fi
+        fi
+    else
+        info "GCC is not installed. Installing the latest version."
+        brew install gcc
+        success "GCC installed successfully."
+    fi
+
+    # openmpiのインストール
+    echo -e
+    info "Installing OpenMPI with GCC"
+    gcc_version=$(ls /opt/homebrew/bin/gcc-* 2>/dev/null | grep -Eo 'gcc-[0-9]+' | sort -V | tail -n 1)
+    gpp_version=$(ls /opt/homebrew/bin/g++-* 2>/dev/null | grep -Eo 'g\+\+-[0-9]+' | sort -V | tail -n 1)
+    if ! brew list open-mpi &>/dev/null; then
+        HOMEBREW_CC=$gcc_version HOMEBREW_CXX=$gpp_version brew install open-mpi --build-from-source
+    else
+        info "OpenMPI is already installed."
+    fi
+
+    # GCCのシンボリックリンク作成
+    gcc_path=$(ls /opt/homebrew/bin/gcc-* 2>/dev/null | grep -E '^/opt/homebrew/bin/gcc-[0-9]+$' | sort -V | tail -n 1)
+    gpp_path=$(ls /opt/homebrew/bin/g++-* 2>/dev/null | grep -E '^/opt/homebrew/bin/g\+\+-[0-9]+$' | sort -V | tail -n 1)
+    gfortran_path=$(ls /opt/homebrew/bin/gfortran-* 2>/dev/null | grep -E '^/opt/homebrew/bin/gfortran-[0-9]+$' | sort -V | tail -n 1)
+    cpp_path=$(ls /opt/homebrew/bin/cpp-* 2>/dev/null | grep -E '^/opt/homebrew/bin/cpp-[0-9]+$' | sort -V | tail -n 1)
+
+    if [[ -n "$gcc_path" && -n "$gpp_path" && -n "$gfortran_path" && -n "$cpp_path" ]]; then
+        ln -sf "$gcc_path" /opt/homebrew/bin/gcc
+        ln -sf "$gpp_path" /opt/homebrew/bin/g++ 
+        ln -sf "$gfortran_path" /opt/homebrew/bin/gfortran
+        ln -sf "$cpp_path" /opt/homebrew/bin/cpp
+        success "GCC symbolic links created successfully."
+    else
+        warning "GCC components not found. Skipping symbolic link configuration."
+    fi
+
     # BrewfileとBrewfile.optionalのパスを設定
     platform_brewfile=""
     platform_brewfile_optional=""

@@ -1,9 +1,9 @@
 tap 'homebrew/bundle'
-tap 'homebrew/cask-fonts'
-brew 'gcc' # Compiler
-brew 'open-mpi' # parallel library
 brew 'cmake' # build tool
 brew 'compiledb' # generate compile_commands.json from Makefile
+brew 'automake'
+brew 'openblas' # BLAS library
+brew 'scalapack' # 並列線形代数ライブラリ
 brew 'python' # Python (latest version)
 brew 'pyenv' # Python version control
 brew 'rbenv' # ruby version control
@@ -13,19 +13,15 @@ brew 'cpanm'
 brew 'mas'
 brew 'bat' # better cat
 brew 'diff-so-fancy'
-brew 'exa'
 brew 'fftw' # Fourier transformation library
 brew 'fd' # find alternative
-cask 'font-hack-nerd-font'
 brew 'fortran-language-server'
 brew 'fzf' # Fuzzy file searcher, used in scripts and in vim
 brew 'git' # Git version control (latest version)
 brew 'git-delta' # a better git diff
 brew 'grep' # grep (latest)
 brew 'neovim' # better Vim
-brew 'openblas' # BLAS library
 brew 'ripgrep' # very fast file searcher
-brew 'scalapack' # 並列線形代数ライブラリ
 brew 'tmux' # ターミナルマルチプレクサ
 brew 'tree' # pretty-print directory contents
 brew 'vim' # Vim
@@ -33,3 +29,5 @@ brew 'xclip'
 brew 'yarn'
 brew 'zsh'
 brew 'z'
+cask 'iterm2'
+cask 'font-hack-nerd-font'
