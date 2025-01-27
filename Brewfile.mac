@@ -7,6 +7,7 @@ brew 'scalapack' # 並列線形代数ライブラリ
 brew 'python' # Python (latest version)
 brew 'pyenv' # Python version control
 brew 'rbenv' # ruby version control
+brew 'perl'
 brew 'fnm' # Fast Node version manager
 brew 'npm'
 brew 'mas'
