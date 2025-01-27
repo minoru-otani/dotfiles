@@ -9,7 +9,6 @@ brew 'pyenv' # Python version control
 brew 'rbenv' # ruby version control
 brew 'fnm' # Fast Node version manager
 brew 'npm'
-brew 'cpanm'
 brew 'mas'
 brew 'bat' # better cat
 brew 'diff-so-fancy'
