@@ -238,7 +238,7 @@ autocmd FileType tex let b:coc_pairs = [["$", "$"]]
 " nvimを立ち上げた時にpython仮想環境をactivateして使う
 " https://rcmdnk.com/blog/2020/08/11/computer-vim/
 if has ('nvim') && !filereadable(expand('~/.vim_no_python'))
-  let s:python3 = system('which python3')
+  let s:python3 = substitute(system('which python3'), '[\n\0]', '', 'g')
   if strlen(s:python3) != 0
     let s:python3_dir = $HOME . '/.vim/python3'
     if ! isdirectory(s:python3_dir)
