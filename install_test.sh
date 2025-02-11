@@ -41,7 +41,7 @@ log_action() {
 }
 
 show_usage() {
-    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults|shell|terminfo|fonts}\n"
+    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults|shell|terminfo|fonts|tpm}\n"
     exit 1
 }
 
@@ -773,6 +773,28 @@ unset_powerline_fonts() {
     echo "Powerline fonts have been successfully uninstalled."
 }
 
+set_tpm() {
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+    if [[ -d "$tpm_dir" ]]; then
+        echo "TPM is already installed at $tpm_dir. Skipping installation."
+    else
+        echo "Cloning tmux plugin manager (TPM)..."
+        git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+        echo "TPM successfully installed."
+    fi
+}
+
+unset_tpm() {
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+    if [[ -d "$tpm_dir" ]]; then
+        echo "Removing TPM from $tpm_dir..."
+        rm -rf "$tpm_dir"
+        echo "TPM successfully uninstalled."
+    else
+        echo "TPM is not installed. Skipping."
+    fi
+}
+
 # 引数を解析し、install または uninstall を判断する
 main() {
     # 引数がない場合はヘルプを表示
@@ -791,7 +813,7 @@ main() {
                 undo=true
                 shift
                 ;;
-            symlink|git|homebrew|defaults|shell|terminfo|fonts)
+            symlink|git|homebrew|defaults|shell|terminfo|fonts|tpm)
                 command="$1"
                 shift
                 ;;
@@ -869,6 +891,15 @@ main() {
             else
                 title "Installing Powerline fonts"
                 set_powerline_fonts
+            fi
+            ;;
+        tpm)
+            if [ "$undo" = true ]; then
+                title "Uninstalling TPM"
+                unset_tpm
+            else
+                title "Installing TPM"
+                set_tpm
             fi
             ;;
         *)
