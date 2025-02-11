@@ -41,7 +41,7 @@ log_action() {
 }
 
 show_usage() {
-    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults|shell|terminfo}\n"
+    echo -e $"\nUsage: $(basename "$0") [-u] {symlink|git|homebrew|defaults|shell|terminfo|fonts}\n"
     exit 1
 }
 
@@ -754,6 +754,25 @@ unset_terminfo() {
     fi
 }
 
+set_powerline_fonts() {
+    echo "Cloning the Powerline fonts repository..."
+    git clone https://github.com/powerline/fonts.git --depth=1
+    cd fonts || exit
+    echo "Running the install script..."
+    ./install.sh
+    cd ..
+    rm -rf fonts
+    echo "Powerline fonts have been successfully installed."
+}
+
+unset_powerline_fonts() {
+    echo "Removing Powerline fonts..."
+    rm -f ~/Library/Fonts/*Powerline*.ttf
+    echo "Resetting font cache..."
+    fc-cache -f -v
+    echo "Powerline fonts have been successfully uninstalled."
+}
+
 # 引数を解析し、install または uninstall を判断する
 main() {
     # 引数がない場合はヘルプを表示
@@ -772,7 +791,7 @@ main() {
                 undo=true
                 shift
                 ;;
-            symlink|git|homebrew|defaults|shell|terminfo)
+            symlink|git|homebrew|defaults|shell|terminfo|fonts)
                 command="$1"
                 shift
                 ;;
@@ -841,6 +860,15 @@ main() {
             else
                 title "Configuring terminfo"
                 setup_terminfo
+            fi
+            ;;
+        fonts)
+            if [ "$undo" = true ]; then
+                title "Uninstalling Powerline fonts"
+                unset_powerline_fonts
+            else
+                title "Installing Powerline fonts"
+                set_powerline_fonts
             fi
             ;;
         *)
