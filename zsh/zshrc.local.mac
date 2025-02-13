@@ -79,3 +79,9 @@ else
     echo "Unknown architecture: $ARCH"
 fi
 
+# pyenvの環境変数設定
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+# rbenvの環境変数設定
+export RBENV_ROOT="$HOME/.rbenv"
+export PATH="$RBENV_ROOT/bin:$PATH"
