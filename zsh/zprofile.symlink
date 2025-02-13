@@ -14,5 +14,5 @@ elif [[ -d $HOME/.linuxbrew ]]; then
     test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# version control for ruby
-test -d $HOME/.rbenv && eval "$(rbenv init -)"
+# version control for python
+test -d $HOME/.pyenv && eval "$(pyenv init --path)"
