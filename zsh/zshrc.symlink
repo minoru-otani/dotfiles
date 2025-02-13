@@ -440,3 +440,10 @@ fi
 if [[ -a ~/.localrc ]]; then
     source ~/.localrc
 fi
+
+# version control for ruby
+test -d $HOME/.rbenv && eval "$(rbenv init -)"
+# version control for python
+test -d $HOME/.pyenv && eval "$(pyenv init -)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

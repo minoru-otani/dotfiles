@@ -29,7 +29,6 @@ cask 'vesta'
 cask 'visual-studio-code'
 cask 'xquartz'
 cask 'zoom'
-mas 'Fantastical', id: 975937182
 mas 'GoodNotes 6', id: 1444383602
 mas 'LadioCast', id: 411213048
 mas 'keynote', id: 409183694
