@@ -15,4 +15,5 @@ elif [[ -d $HOME/.linuxbrew ]]; then
 fi
 
 # version control for python
+>>>>>>> Stashed changes
 test -d $HOME/.pyenv && eval "$(pyenv init --path)"
